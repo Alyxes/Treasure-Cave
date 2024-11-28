@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Player xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <alltimePartyId>1</alltimePartyId>
+  <currentPartyId>1</currentPartyId>
+  <description>A warrior used to all kinds of weapons but rarely specialized in any.
+This is someone who's been a soldier for some time, but now live as a mercenary after loosing their job, moral code
+or conviction, or they were a young person fighting in the streets until that could make them a living.
+They can take a lot of beating, and they're fast.</description>
+  <warriorTypeIndex>5</warriorTypeIndex>
+  <name>Test Guy</name>
+  <type>fighter</type>
+  <gender>non binary</gender>
+  <pronoun>
+    <string>they</string>
+    <string>them</string>
+    <string>their</string>
+    <string>person</string>
+  </pronoun>
+  <battlecry>Another day, another fight...</battlecry>
+  <baseHealth>10</baseHealth>
+  <baseStrength>6</baseStrength>
+  <baseStamina>7</baseStamina>
+  <baseSpeed>9</baseSpeed>
+  <extraPoints>0</extraPoints>
+  <level>1</level>
+  <dualWieldLevel>1</dualWieldLevel>
+  <experience>0</experience>
+  <dualWieldExperience>0</dualWieldExperience>
+  <maximumLevel>42</maximumLevel>
+  <maximumWieldLevel>20</maximumWieldLevel>
+  <maxHealth>11</maxHealth>
+  <healthpoints>11</healthpoints>
+  <maxStrength>8</maxStrength>
+  <strength>8</strength>
+  <maxStamina>11</maxStamina>
+  <stamina>11</stamina>
+  <armor>5</armor>
+  <maxSpeed>11</maxSpeed>
+  <speed>9</speed>
+  <choiceOfWeapon>
+    <string>medium</string>
+    <string>melee</string>
+  </choiceOfWeapon>
+  <composure>8</composure>
+  <baseComposure>8</baseComposure>
+  <ailments />
+  <berserkValue>0</berserkValue>
+  <recoverFromPoisoningCounter>0</recoverFromPoisoningCounter>
+  <consecutiveMisses>0</consecutiveMisses>
+  <consecutiveBigDamages>0</consecutiveBigDamages>
+  <consecutiveDodges>0</consecutiveDodges>
+  <consecutiveCriticalHits>0</consecutiveCriticalHits>
+  <isDualWielding>false</isDualWielding>
+  <isUsingDoubleHandedWeapon>false</isUsingDoubleHandedWeapon>
+  <attackDice>6</attackDice>
+  <bonusAttackDice>2</bonusAttackDice>
+  <bonusDefenceDice>0</bonusDefenceDice>
+  <bonusCriticalDice>0</bonusCriticalDice>
+  <dualWieldDice>-4</dualWieldDice>
+  <weaponSafeDice>2</weaponSafeDice>
+  <bonusSafeDice>0</bonusSafeDice>
+  <maxChanceToCounter>1</maxChanceToCounter>
+  <chanceToCounterAttack>1</chanceToCounterAttack>
+  <armorName>Leather Gambeson</armorName>
+  <weaponName>Soldier Sword</weaponName>
+  <shieldName>Wood Buckler</shieldName>
+  <branzen>540</branzen>
+  <warriorGear>
+    <Gear xsi:nil="true" />
+    <Gear xsi:nil="true" />
+    <Gear xsi:nil="true" />
+    <Gear xsi:nil="true" />
+    <Gear xsi:nil="true" />
+    <Gear xsi:nil="true" />
+    <Gear xsi:nil="true" />
+    <Gear xsi:nil="true" />
+    <Gear xsi:nil="true" />
+    <Gear xsi:nil="true" />
+    <Gear xsi:nil="true" />
+    <Gear xsi:nil="true" />
+    <Gear xsi:nil="true" />
+    <Gear xsi:nil="true" />
+  </warriorGear>
+  <weightOfEquipment>2</weightOfEquipment>
+  <cost>0</cost>
+  <restTime>0</restTime>
+  <addedHealthPoints>1</addedHealthPoints>
+  <addedStrengthPoints>2</addedStrengthPoints>
+  <addedStaminaPoints>2</addedStaminaPoints>
+  <addedSpeedPoints>2</addedSpeedPoints>
+  <extraHealthPoints>0</extraHealthPoints>
+  <extraStrengthPoints>0</extraStrengthPoints>
+  <extraStaminaPoints>0</extraStaminaPoints>
+  <extraSpeedPoints>0</extraSpeedPoints>
+  <extraComposurePoints>0</extraComposurePoints>
+</Player>
