@@ -9,7 +9,7 @@ Navigating the grid with the arrow keys on the keyboard lets you explore a cave 
 When your character and eventually party of warriors have taken too much damage you must get out of the cave, going into the town and sell loot, rest and heal.
 When you die, all progress is gone. But you can save your initial character, load it and use it again.
 There are still a small amount of cave rooms, 20 as of now, and when you have found them all the game will crash the next time you enter a new pathway. It's not finished, clearly.
-I have a pretty ample description of almost all parts of the game on my site https://www.alyxes.se/, specifically here: https://www.alyxes.se/projects/treasure-cave/
+I have a pretty ample description of almost all parts of the game on my site https://www.alyxes.se/, specifically here: https://www.alyxes.se/projects/treasure-cave/<br>
 I go through versions there.
 
 This game probably has nothing new in it, hence the No License-license.
