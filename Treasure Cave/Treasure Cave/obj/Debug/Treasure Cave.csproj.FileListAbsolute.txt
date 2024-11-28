@@ -1,0 +1,45 @@
+D:\Tim\Kodning\Nya Studier\C#\Programmering 1\Project Treasure Cave\Treasure Cave\Treasure Cave\bin\Debug\Treasure Cave.exe.config
+D:\Tim\Kodning\Nya Studier\C#\Programmering 1\Project Treasure Cave\Treasure Cave\Treasure Cave\bin\Debug\Treasure Cave.exe
+D:\Tim\Kodning\Nya Studier\C#\Programmering 1\Project Treasure Cave\Treasure Cave\Treasure Cave\bin\Debug\Treasure Cave.pdb
+D:\Tim\Kodning\Nya Studier\C#\Programmering 1\Project Treasure Cave\Treasure Cave\Treasure Cave\obj\Debug\Treasure Cave.csproj.AssemblyReference.cache
+D:\Tim\Kodning\Nya Studier\C#\Programmering 1\Project Treasure Cave\Treasure Cave\Treasure Cave\obj\Debug\Treasure Cave.csproj.SuggestedBindingRedirects.cache
+D:\Tim\Kodning\Nya Studier\C#\Programmering 1\Project Treasure Cave\Treasure Cave\Treasure Cave\obj\Debug\Treasure Cave.csproj.CoreCompileInputs.cache
+D:\Tim\Kodning\Nya Studier\C#\Programmering 1\Project Treasure Cave\Treasure Cave\Treasure Cave\obj\Debug\Treasure Cave.exe
+D:\Tim\Kodning\Nya Studier\C#\Programmering 1\Project Treasure Cave\Treasure Cave\Treasure Cave\obj\Debug\Treasure Cave.pdb
+C:\Users\nr1al\Kodning\Nya studier\C#\Programmering 1\Project Treasure Cave\Treasure Cave\Treasure Cave\bin\Debug\Treasure Cave.exe.config
+C:\Users\nr1al\Kodning\Nya studier\C#\Programmering 1\Project Treasure Cave\Treasure Cave\Treasure Cave\bin\Debug\Treasure Cave.exe
+C:\Users\nr1al\Kodning\Nya studier\C#\Programmering 1\Project Treasure Cave\Treasure Cave\Treasure Cave\bin\Debug\Treasure Cave.pdb
+C:\Users\nr1al\Kodning\Nya studier\C#\Programmering 1\Project Treasure Cave\Treasure Cave\Treasure Cave\obj\Debug\Treasure Cave.csproj.AssemblyReference.cache
+C:\Users\nr1al\Kodning\Nya studier\C#\Programmering 1\Project Treasure Cave\Treasure Cave\Treasure Cave\obj\Debug\Treasure Cave.csproj.SuggestedBindingRedirects.cache
+C:\Users\nr1al\Kodning\Nya studier\C#\Programmering 1\Project Treasure Cave\Treasure Cave\Treasure Cave\obj\Debug\Treasure Cave.csproj.CoreCompileInputs.cache
+C:\Users\nr1al\Kodning\Nya studier\C#\Programmering 1\Project Treasure Cave\Treasure Cave\Treasure Cave\obj\Debug\Treasure Cave.exe
+C:\Users\nr1al\Kodning\Nya studier\C#\Programmering 1\Project Treasure Cave\Treasure Cave\Treasure Cave\obj\Debug\Treasure Cave.pdb
+D:\Tim\Kodning\Project Treasure Cave\Treasure Cave\Treasure Cave\bin\Debug\Treasure Cave.exe.config
+D:\Tim\Kodning\Project Treasure Cave\Treasure Cave\Treasure Cave\bin\Debug\Treasure Cave.exe
+D:\Tim\Kodning\Project Treasure Cave\Treasure Cave\Treasure Cave\bin\Debug\Treasure Cave.pdb
+D:\Tim\Kodning\Project Treasure Cave\Treasure Cave\Treasure Cave\obj\Debug\Treasure Cave.csproj.AssemblyReference.cache
+D:\Tim\Kodning\Project Treasure Cave\Treasure Cave\Treasure Cave\obj\Debug\Treasure Cave.csproj.CoreCompileInputs.cache
+D:\Tim\Kodning\Project Treasure Cave\Treasure Cave\Treasure Cave\obj\Debug\Treasure Cave.exe
+D:\Tim\Kodning\Project Treasure Cave\Treasure Cave\Treasure Cave\obj\Debug\Treasure Cave.pdb
+C:\Users\nr1al\Dropbox\Tim Stuff\Project Treasure Cave\Treasure Cave\Treasure Cave\bin\Debug\Treasure Cave.exe.config
+C:\Users\nr1al\Dropbox\Tim Stuff\Project Treasure Cave\Treasure Cave\Treasure Cave\bin\Debug\Treasure Cave.exe
+C:\Users\nr1al\Dropbox\Tim Stuff\Project Treasure Cave\Treasure Cave\Treasure Cave\bin\Debug\Treasure Cave.pdb
+C:\Users\nr1al\Dropbox\Tim Stuff\Project Treasure Cave\Treasure Cave\Treasure Cave\obj\Debug\Treasure Cave.csproj.AssemblyReference.cache
+C:\Users\nr1al\Dropbox\Tim Stuff\Project Treasure Cave\Treasure Cave\Treasure Cave\obj\Debug\Treasure Cave.csproj.SuggestedBindingRedirects.cache
+C:\Users\nr1al\Dropbox\Tim Stuff\Project Treasure Cave\Treasure Cave\Treasure Cave\obj\Debug\Treasure Cave.csproj.CoreCompileInputs.cache
+C:\Users\nr1al\Dropbox\Tim Stuff\Project Treasure Cave\Treasure Cave\Treasure Cave\obj\Debug\Treasure Cave.exe
+C:\Users\nr1al\Dropbox\Tim Stuff\Project Treasure Cave\Treasure Cave\Treasure Cave\obj\Debug\Treasure Cave.pdb
+C:\Users\nr1al\Kodning\Project Treasure Cave\Treasure Cave\Treasure Cave\bin\Debug\Treasure Cave.exe.config
+C:\Users\nr1al\Kodning\Project Treasure Cave\Treasure Cave\Treasure Cave\bin\Debug\Treasure Cave.exe
+C:\Users\nr1al\Kodning\Project Treasure Cave\Treasure Cave\Treasure Cave\bin\Debug\Treasure Cave.pdb
+C:\Users\nr1al\Kodning\Project Treasure Cave\Treasure Cave\Treasure Cave\obj\Debug\Treasure Cave.csproj.AssemblyReference.cache
+C:\Users\nr1al\Kodning\Project Treasure Cave\Treasure Cave\Treasure Cave\obj\Debug\Treasure Cave.csproj.CoreCompileInputs.cache
+C:\Users\nr1al\Kodning\Project Treasure Cave\Treasure Cave\Treasure Cave\obj\Debug\Treasure Cave.exe
+C:\Users\nr1al\Kodning\Project Treasure Cave\Treasure Cave\Treasure Cave\obj\Debug\Treasure Cave.pdb
+C:\Tim\Kodning\Project Treasure Cave\Treasure Cave\Treasure Cave\bin\Debug\Treasure Cave.exe.config
+C:\Tim\Kodning\Project Treasure Cave\Treasure Cave\Treasure Cave\bin\Debug\Treasure Cave.exe
+C:\Tim\Kodning\Project Treasure Cave\Treasure Cave\Treasure Cave\bin\Debug\Treasure Cave.pdb
+C:\Tim\Kodning\Project Treasure Cave\Treasure Cave\Treasure Cave\obj\Debug\Treasure Cave.csproj.AssemblyReference.cache
+C:\Tim\Kodning\Project Treasure Cave\Treasure Cave\Treasure Cave\obj\Debug\Treasure Cave.csproj.CoreCompileInputs.cache
+C:\Tim\Kodning\Project Treasure Cave\Treasure Cave\Treasure Cave\obj\Debug\Treasure Cave.exe
+C:\Tim\Kodning\Project Treasure Cave\Treasure Cave\Treasure Cave\obj\Debug\Treasure Cave.pdb
