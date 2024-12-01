@@ -1154,6 +1154,45 @@ namespace TreasureCave
 
             return Caves[nCave];
         }
+        // Method from placing the player on correct position on both the cave map and in cave room, when entering a cave room.
+        // Attributes(Player position in big cave X, Player position in big cave Y, direction difference X, direction difference Y, New position in new cave room X, New position in new cave room Y)
+        static void EnterRoomFromDirection(int bigCaveX, int bigCaveY, int dirX, int dirY, int entrancePosX, int entrancePosY)
+        {
+            // Uses CheckMap to see if there is a map or not already in entered direction.
+            Cave nextCave = CheckMap(caveMap[bigCaveX + dirX, bigCaveY + dirY]);
+
+            // Which direction the player enters from.
+            PartyPosition[0] = entrancePosX;
+            PartyPosition[1] = entrancePosY;
+
+            // position in the big cave
+            BigCavePosition[0] = bigCaveX + dirX;
+            BigCavePosition[1] = bigCaveY + dirY;
+
+            // Checks if this was the path you just passed through. If nothing else has been done in between, time haven't had time to pass.
+            if (!samePathway)
+                Game.TimeUnitsPass(1, true);
+
+            Game.justEntered = true;
+            samePathway = true;
+
+            if (nextCave != null)
+            {
+                currentCaveNr = nextCave.id;
+
+                NavigateCave(Caves[nextCave.id]);
+            }
+            else
+            {
+                // No room there! Places a cave room on the desired position, randomly picked from the list of rooms.
+                Cave newCave = FindNewCave();
+                caveMap[bigCaveX + dirX, bigCaveY + dirY] = newCave;
+                currentCaveNr = newCave.id;
+
+                NavigateCave(newCave);
+            }
+        }
+
         // Method for entering a cave in the direction you exited a pathway.
         static void EnterCaveDoor()
         {
@@ -1164,148 +1203,25 @@ namespace TreasureCave
 
             int[] p = PartyPosition;
 
-            // Uses CheckMap to see if there is a map or not already in entered direction.
-            // NOTE! Following if statements are not yet optimized. Soon a method with necessary arguments will run in every if statement instead of this ugly repetion...
             if (p[0] == 0 && p[1] == 3)
             {
                 // up door
-                Cave nextCave = CheckMap(caveMap[x - 1, y]);
-
-                // Enters from down door
-                p[0] = 6;
-                p[1] = 3;
-
-                // position in the big cave
-                BigCavePosition[0] = x-1;
-                BigCavePosition[1] = y;
-
-                // Checks if this was the path you just passed through. If nothing else has been done in between, time haven't had time to pass.
-                if (!samePathway)
-                    Game.TimeUnitsPass(1, true);
-
-                Game.justEntered = true;
-                samePathway = true;
-
-                if (nextCave != null)
-                {
-                    currentCaveNr = nextCave.id;
-
-                    NavigateCave(Caves[nextCave.id]);
-                }
-                else
-                {
-                    // No room there! Places a cave room on the desired position, randomly picked from the list of rooms.
-                    Cave newCave = FindNewCave();
-                    caveMap[x - 1, y] = newCave;
-                    currentCaveNr = newCave.id;
-
-                    NavigateCave(newCave);
-                }
+                EnterRoomFromDirection(x, y, -1, 0, 6, 3);
             }
             if (p[0] == 3 && p[1] == 6)
             {
                 // right door
-                Cave nextCave = CheckMap(caveMap[x, y + 1]);
-
-                // Enters from left door
-                p[0] = 3;
-                p[1] = 0;
-
-                // position in the big cave
-                BigCavePosition[0] = x;
-                BigCavePosition[1] = y+1;
-
-                // Checks if this was the path you just passed through. If nothing else has been done in between, time haven't had time to pass.
-                if (!samePathway)
-                    Game.TimeUnitsPass(1, true);
-
-                Game.justEntered = true;
-                samePathway = true;
-
-                if (nextCave != null)
-                {
-                    currentCaveNr = nextCave.id;
-
-                    NavigateCave(Caves[nextCave.id]);
-                }
-                else
-                {
-                    Cave newCave = FindNewCave();
-                    caveMap[x, y + 1] = newCave;
-                    currentCaveNr = newCave.id;
-
-                    NavigateCave(newCave);
-                }
+                EnterRoomFromDirection(x, y, 0, 1, 3, 0);
             }
             if (p[0] == 6 && p[1] == 3)
             {
                 // down door
-                Cave nextCave = CheckMap(caveMap[x + 1, y]);
-
-                // Enters from up door
-                p[0] = 0;
-                p[1] = 3;
-
-                // position in the big cave
-                BigCavePosition[0] = x+1;
-                BigCavePosition[1] = y;
-
-                // Checks if this was the path you just passed through. If nothing else has been done in between, time haven't had time to pass.
-                if (!samePathway)
-                    Game.TimeUnitsPass(1, true);
-
-                Game.justEntered = true;
-                samePathway = true;
-
-                if (nextCave != null)
-                {
-                    currentCaveNr = nextCave.id;
-
-                    NavigateCave(Caves[nextCave.id]);
-                }
-                else
-                {
-                    Cave newCave = FindNewCave();
-                    caveMap[x + 1, y] = newCave;
-                    currentCaveNr = newCave.id;
-
-                    NavigateCave(newCave);
-                }
+                EnterRoomFromDirection(x, y, 1, 0, 0, 3);
             }
             if (p[0] == 3 && p[1] == 0)
             {
                 // left door
-                Cave nextCave = CheckMap(caveMap[x, y - 1]);
-
-                // Enters from right door
-                p[0] = 3;
-                p[1] = 6;
-
-                // position in the big cave
-                BigCavePosition[0] = x;
-                BigCavePosition[1] = y-1;
-
-                // Checks if this was the path you just passed through. If nothing else has been done in between, time haven't had time to pass.
-                if (!samePathway)
-                    Game.TimeUnitsPass(1, true);
-
-                Game.justEntered = true;
-                samePathway = true;
-
-                if (nextCave != null)
-                {
-                    currentCaveNr = nextCave.id;
-
-                    NavigateCave(Caves[nextCave.id]);
-                }
-                else
-                {
-                    Cave newCave = FindNewCave();
-                    caveMap[x, y - 1] = newCave;
-                    currentCaveNr = newCave.id;
-
-                    NavigateCave(newCave);
-                }
+                EnterRoomFromDirection(x, y, 0, -1, 3, 6);
             }
         }
         // Method to randomize the position and amount of entrances/exits in a new cave room.
