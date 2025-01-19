@@ -128,7 +128,7 @@ namespace TreasureCave
         public int extraStaminaPoints = 0;
         public int extraSpeedPoints = 0;
         public int extraComposurePoints = 0;
-        // Kanske behöver fler varianter här...
+        // Maybe need more variants of these...
 
         public static void AddIdStuff(Hero warrior)
         {
@@ -829,18 +829,20 @@ namespace TreasureCave
             warrior.dualWieldDice = Game.dualWieldLevelStepData[(newLevel-2)*2];
             if (warrior.dualWieldDice != oldDWDice)
             {
-                Game.WrtL("Warrior's bonus dice for dual wielding increased by one.");
+                Game.WrtL("Warrior's bonus dice for dual wielding increased by one.\n");
             }
 
             // Game.WrtL("old chanceToCounterAttack: " + warrior.chanceToCounterAttack);
 
-            warrior.maxChanceToCounter += Game.dualWieldLevelStepData[((newLevel-2)*2) + 1];
+            warrior.maxChanceToCounter += Game.dualWieldLevelStepData[((newLevel -2) *2) +1];
             warrior.chanceToCounterAttack = warrior.maxChanceToCounter;
-            int newCounterDice = Game.dualWieldLevelStepData[((newLevel - 2) * 2) + 1];
+            int newCounterDice = Game.dualWieldLevelStepData[((newLevel -2) *2) +1];
             if (newCounterDice > 0)
             {
-                Game.WrtL("Warrior's chance to counter attack increased by " + newCounterDice + ".");
+                Game.WrtL("Warrior's chance to counter attack increased by " + newCounterDice + ".\n");
             }
+
+            Game.AwaitKeyEnter();
 
             UpdateWarriorStats(warrior);
 
@@ -928,34 +930,39 @@ namespace TreasureCave
             int slump1;
             int slump2;
 
-            // I should eventually load the names from a txt-file instead...
+            // NOTE! I should eventually load the names from a txt-file instead...
             string[] mNames = { "Thor", "Loki", "Rahst", "Pippin", "Sven", "Jaan", "Rohan", "Grom", "Yurigan", "Conan", "Sam", "Aragorn", "Boyd", "Serdarr", "Jauk", "Jonn", "Yoann", "Petrik",
-                                "Drake", "Zindahr", "Xion", "Hank", "Biuras", "Dante", "Worf", "Kim", "Casheem", "Brunte", "Jorr", "Gimli", "Ceasar", "Tom", "Ash", "Marduk", "Zahr", "Pomm",
+                                "Drake", "Zindahr", "Xion", "Hank", "Biuras", "Dante", "Worf", "Casheem", "Brunte", "Jorr", "Gimli", "Ceasar", "Tom", "Ash", "Marduk", "Zahr", "Pomm", "Hondo",
                                 "Woire", "Gant", "Bennek", "Kale", "Qirak", "Eric", "Obi", "Ben", "Luke", "Han", "Sharuk", "Hrithik", "Link", "Dorf", "Freddy", "Omar", "Simeon", "Odd", "Lahr",
                                 "Spike", "Giles","Angelos", "Lorne", "Rupert", "Snake", "Baccus", "Toby", "Gideon", "Poe", "Edgar", "Rauk", "Tikon", "Yohann", "Ameer", "Connor", "Spock", "Rohit",
                                 "Roy", "Clay", "Rayleigh", "Gash", "Jack", "Slade", "Oak", "Stiles", "Scott", "Dalton", "Gonn", "Prince", "Raide", "Zuko", "Aang", "Sokka", "Iroh", "Cid", "Finn",
                                 "Marco", "Zack", "Vernon", "Borat", "Zigyon", "Rufus", "Ranveer", "Ravesh", "Bucky", "Budley", "Roydas", "Tang", "Derick", "Beat", "Timothee", "Ryle", "Rex", "Bo",
-                                "Rocky", "Dean", "Bazz", "Freid", "Bill", "Bjohrn", "Dainehl", "Muahn", "Derias", "Mathies", "Henrique", "Caspian", "Callisto", "Corben", "Stefán", "Tyke", "Chad",
-                                "Buzz", "Boon", "Effin", "Effamor", "Bahr", "Clyde", "Eufreed", "Freyd", "Fried", "Perath", "Jiro", "Todd", "Glyde", "Sennek", "Baronn", "Mark", "Noah", "Bayne",
+                                "Rocky", "Dean", "Bazz", "Freid", "Bill", "Bjohrn", "Dainehl", "Muahn", "Derias", "Mathies", "Henrique", "Caspian", "Corben", "Stefán", "Tyke", "Chad", "Chuck",
+                                "Buzz", "Boon", "Effin", "Effamor", "Bahr", "Clyde", "Eufreed", "Franze", "Fredrigo", "Perath", "Jiro", "Todd", "Glyde", "Sennek", "Baronn", "Mark", "Noah", "Tyko",
                                 "Dom", "Dominic", "Max", "Locke", "Buhga", "Eodal", "Sark", "Ponthe", "Brock", "Boris", "Hector", "Sanoak", "Javier", "Igor", "Kwade", "Njord", "Kye", "Yondu",
-                                "Hawke", "Chopper", "Victor", "Robh", "Rode", "Bahrd", "Horatio", "Gohan", "Pudh", "Gero", "Chrono", "Goku", "Muad'Dib", "Eldemar", "Byron", "Geralt", "Baltu",
+                                "Hawke", "Chopper", "Viktor", "Robh", "Rode", "Bahrd", "Horatio", "Gohan", "Pudh", "Gero", "Chrono", "Goku", "Muad'Dib", "Eldemar", "Byron", "Geralt", "Baltu",
                                 "Derris", "Dirk", "Ivan", "Durra", "Mico", "Bob", "Seth", "Higgs", "Nobu", "Ranma", "Juran", "Dorn", "Darth", "Zod", "Fyonn", "Birk", "Furn", "Gebralto", "Jarren",
-                                "Odney"};
+                                "Odney", "Jean-Luc", "Trond", "Kos", "Hilruk", "Hylian", "Liam", "Desmond", "Cesar", "Fundi", "Forrek", "Kob", "Beak", "Figuero", "Raam","Basque", "Xander","Gai",
+                                "Allan", "Allen", "Ambrose", "Thomias", "Neyt", "Nohrk", "Salem", "Maruk", "Lando", "Bolero", "Nocturne", "Christopher", "Jeem", "Bayne", "Frank", "Abel", "Lars",
+                                "Tyrone", "Daniol", "Zaff", "Leon", "Stitch", "Thimean", "Basil", "Corian"};
+
             string[] fNames = { "Freya", "Jaana", "Becca", "Teera", "Ilveereh", "Ylva", "Diina", "Ana", "Opiana", "Terra", "Donna", "Oscilla", "Hildegard", "Viola", "Buffy", "Liana", "Helioma",
                                 "Cordelia", "Brunhilde", "Girelle", "Kastania", "Quineira", "Leia", "Padme", "Cortana", "Yisme", "Katrina", "Alia", "Alita", "Zelda", "Farore", "Nayru", "Epona",
                                 "Tanya", "Astra", "Faye", "Lyca", "Phenicia", "Shira", "Shakira", "Ghani", "Xena", "Enya", "Winifred", "Ellie", "Simone", "Ciara", "Emilia", "Astrid", "Thalia",
                                 "Dana", "Lara", "Laurice", "Veera", "Pam", "Lu Lu", "Lois", "Peña", "Lena", "Carolynn", "Paru", "Hanneke", "Joanna", "Eliza", "Erica", "Rosanne", "Gia", "Wanda",
-                                "Fray", "Yuki","Pyrinne", "Rei", "Beema", "Tori", "Inica", "Erin", "Tylde", "Marle", "Ayla", "Schala", "Nikka", "Katara", "Suki", "Mae", "Ezra", "Jyn", "Ethel",
-                                "Marci", "Zee-zee", "Durma", "Contradictoria", "Governia", "Zandrah", "Kat", "Haylee", "Ru-Weena", "Reena", "Catniss", "Violynn", "Theia", "Gaia", "Elsbeth",
+                                "Fray", "Yuki", "Pyrinne", "Renoa", "Beema", "Tori", "Inica", "Erin", "Tylde", "Marle", "Ayla", "Schala", "Nikka", "Katara", "Suki", "Mae", "Ezra", "Jyn", "Ethel",
+                                "Marci", "Zee-zee", "Durma", "Contradictoria", "Governia", "Zandrah", "Kat", "Haylee", "Ru-Weena", "Reena", "Catniss", "Violynn", "Theia", "Gaia", "Elsbeth", "Ji",
                                 "Alice", "Inez", "Iridia", "Lyra", "Uhma", "Jenna", "Uruba", "Ehryn", "Callista", "Rona", "Rudeena", "Kay-Lin", "Correena", "Kanni", "Korrowyn", "Windelia", "Bai",
                                 "Boona", "Otra", "Iktaria", "Rangeela", "Effámi", "Effinea", "Goonam", "Eufrat", "Freeda", "Gina", "Tani", "Stephania", "Ireena", "Senni", "Myra", "Nova", "Nour",
                                 "Sarah", "Minique", "Mia", "Elena", "Ahsoka", "Tuhla", "Zuki", "Binha", "Hekla", "Sanooki", "Hectoveline", "Crystal", "Rynnei", "Katla", "Joo-nya", "Kazine", "Zoe",
                                 "Diamanda", "Shurica", "Cassie", "Victoria", "Faura", "Farine", "Mania", "Vereis", "Chi Chi", "Aniana", "Aniara", "Bulma", "Uma", "Chani", "Zendaya", "Taki", "Lin",
                                 "Idun", "Ezmeralda", "Hellandra", "Arwen", "Serpentra", "Meeri", "Zophia", "Qenna", "Yalena", "Inka", "Juneya", "June", "Juleya", "July", "Julia", "Zhuli", "Rani",
-                                "Akane", "Jurya", "Dolores", "Dornea", "Pollee", "Ponea", "Dores", "Violet", "Sequoia", "Sigourney", "Dráni", "Kaycee", "Kei-Lee", "Fiona", "Fiora", "Ronya",
-                                "Ilia"};
+                                "Akane", "Jurya", "Dolores", "Dornea", "Pollee", "Ponea", "Dores", "Violet", "Sequoia", "Sigourney", "Dráni", "Kaycee", "Kei-Lee", "Fiona", "Fiora", "Ronya", "Emy",
+                                "Ilia", "Beverly", "Tasha", "Miniette", "Caitlyn", "Sevika", "Isolde", "Ambessa", "Nathalee", "Natalia", "Saleen", "Preludea", "Meera", "Ruth", "Lilo", "Mila",
+                                "Jill", "Sherry", "Lou-Eese", "Larisse", "Pylona", "Daniella", "Doryfei", "Zafeera", "Rosemary", "Gahrlicia", "Anise"};
+
             string[] aNames = { "Kim", "Din", "Tiger", "Yuri", "Gil", "Lee", "Shyle", "Silver", "Paye", "Yiga", "Peru", "Eliot", "Angel", "Lucca", "Cyril", "Cinder", "Gilden", "Viper", "Gynn",
-                                "Kalifa", "Akira", "Yanni", "Eid", "Zeer", "Shiigo", "Page", "Tau", "Lou", "Wu", "Seraf", "Yale", "Gura", "Spark", "Shadda", "Innotah", "Gyudan", "Kaisle",
+                                "Kalifa", "Akira", "Yanni", "Eid", "Zeer", "Shiigo", "Page", "Tau", "Lou", "Wu", "Seraf", "Yale", "Gura", "Spark", "Shadda", "Innotah", "Gyudan", "Kaisle", "Qu",
                                 "Rue", "Woe", "Toni", "Marine", "Azure", "Cyann", "Ivy", "Gendra", "Scaar", "Platine", "Row", "Raiden", "Freed", "Treen", "Gizmoe", "Gandel", "Coco", "Ryhs",
                                 "Cassio", "Samus", "Ripley", "Arnie", "Valian", "Que", "Jayne", "Shade", "Shane", "Willow", "Eisle", "Thorn", "Guy", "Heeda", "Cannif", "Tryn", "Spyre", "Raki",
                                 "Zenuhl", "Quint", "Cleo", "Wynde", "Logoe", "Quip", "Dash", "Singe", "Toph", "Rune", "Zeke", "Gal", "Roe", "Raven", "Reese", "Ray", "Teal", "Cricket", "Taren",
@@ -964,15 +971,18 @@ namespace TreasureCave
                                 "Brass", "Brynn", "Juno", "Yuno", "Timmy", "Cercei", "Tundra", "Sun", "Syllek", "Mace", "Lynx", "Sankei", "Cascade", "Vailuh", "Cush", "Ionith", "Ion", "Jai",
                                 "Malachi", "Zompa", "Skye", "Perilou", "Xoriel", "Victoree", "Vic", "Robin", "Bon", "Bonée", "Bokka", "Sai", "Zeta", "Zeire", "Lasham", "Rye", "Zakune", "Ico",
                                 "Araki", "Sora", "Takei", "Verse", "Echo", "Ywen", "Egeele", "Hirra", "Gaara", "Mieko", "Mieke", "Mikko", "Gorna", "Voile", "Rugele", "Vígill", "Hayste", "Zeko",
-                                "Sephy", "Ran", "Ghala", "Juréi", "Doréi", "Pon", "Jinx", "Vye", "Kylo", "Ace", "Eldraan", "Draneis", "Oraga", "Nimago", "Fionne"};
+                                "Sephy", "Ran", "Ghala", "Juréi", "Doréi", "Pon", "Jinx", "Vye", "Kylo", "Ace", "Eldraan", "Draneis", "Oraga", "Nimago", "Fionne", "Dei-Tah", "Geordi", "Minuet",
+                                "Traike", "Rey", "Rinn", "Jayce", "Ekko", "Amber", "Cicero", "Serenaid", "Poe-Ehm", "Zaal", "Sulya", "Salios", "Sal", "Marek", "Myro", "Manta", "Requiém", "Mylo",
+                                "Mirache", "Mika", "Zeruf", "Kaneelo", "Zinnamon", "Rooshe", "Zaki", "Callisto", "Kaleine", "Soohr", "Gunmeiga", "Tye", "Tynoki", "Pilote", "Dani", "Ilraan",
+                                "Loe", "Ebony", "Saffrese"};
 
             string[] lNames = { "Wylde", "Mortifer", "Wick", "Parandas", "Khan", "Roshan", "Tu Meri", "the Adventurer", "Kenobi", "Sohl", "Sonda", "Girandyr", "Azrael", "Bond", "Pond", "Tiberius",
-                                "Picard", "Wellefair", "Joust", "Sturdwall", "Pocayne", "Kain", "Rodhapagos", "Zhul", "Sirren", "Omnicos", "Nightglow", "SteelBarer", "Vox", "Mazenda", "Hick", "",
-                                "Garnell", "Ton Girann", "Kuh Yorenn", "Ahk Uthirion", "Suleiman", "Vei Korra", "Corals", "Pikku", "Orakazmir", "Gunnday", "Simmba", "Kuh Illdahr", "Leafling", "",
-                                "Barrudharos", "Qurrado", "Amenos", "Thanatos", "Vei Deneryan", "Ahk Aderith", "Masraik", "Ton Errigo", "the Seeker", "Bold", "Stark", "Frank", "Grove", "Groove", "",
-                                "Vos Kevvon", "Madaraaki", "Kaneda", "Aran", "San Dooze", "Ton Waruk", "Ahk Zideian", "Zidane", "Strife", "San Gyun", "Barreidas", "Port", "EldsGate", "RensGate",
+                                "Picard", "Wellefair", "Joust", "Sturdwall", "Pocayne", "Kaín", "Rodhapagos", "Zhul", "Sirren", "Omnicos", "Nightglow", "SteelBarer", "Vox", "Mazenda", "Hick", "Rex",
+                                "Garnell", "Ton Girann", "Kuh Yorenn", "Ahk Uthirion", "Suleiman", "Vei Korra", "Corals", "Pikku", "Orakazmir", "Gunnday", "Simmba", "Kuh Illdahr", "Leafling", "Kane",
+                                "Barrudharos", "Qurrado", "Amenos", "Thanatos", "Vei Deneryan", "Ahk Aderith", "Masraik", "Ton Errigo", "the Seeker", "Bold", "Stark", "Frye", "Grove", "Groove", "",
+                                "Vos Kevvon", "Madaraaki", "Kaneda", "Aran", "San Dooze", "Ton Waruk", "Ahk Zideian", "Zidane", "Strife", "San Gyun", "Barreidas", "Port", "EldsGate", "RensGate", "",
                                 "Lyons", "Smithsman", "BladeForger", "PionGate", "Kuh Arkoss", "Andross", "Bannerman", "Weavers", "Moontide", "Crescentia", "Dyhvel", "Vekkio", "Meadow", "Jinn Salu",
-                                "Jinn Eiko", "Vos Ikkyca", "Jinn Toro", "Jinn Fey", "Jadoo", "Mehra", "Auroras", "Kakariko", "Fern", "River", "Cliff", "Kuh Sentall", "Ton Kaska", "Ihl", "Leandre",
+                                "Jinn Eiko", "Vos Ikkyca", "Jinn Toro", "Jinn Fey", "Jadoo", "Mehra", "Auroras", "Kakariko", "Fern", "River", "Cliff", "Kuh Sentall", "Ton Kaska", "Rohel", "Leandre",
                                 "Rook", "the Vagabond", "Ell", "Arrowheart", "Edgewalker", "Tu Taradi", "Woolfe", "Snowe", "Ganonda", "Fowes", "Wex", "Fallahan", "Thylde", "Hencman", "Sparrow", "",
                                 "Burrden", "Ganze", "Mohraniss", "Hyde", "Peer", "Scout", "Tahr", "Venndoer", "Quinn", "Cirrus", "Brakken", "Iridius", "Enigmicus", "Gamma", "Qurios", "Magus", "Kog",
                                 "Ashtear", "Paile", "Amidala", "Dameron", "Calrissian", "Erso", "Imwe", "Omega", "Omnicus", "Sayden", "Yallohr", "Ironclad", "Ironheart", "Woodes", "Salios", "Fogg",
@@ -982,21 +992,26 @@ namespace TreasureCave
                                 "Ton Obahn", "Vei Liryos", "Languale", "Mahogny", "Vei Uriceic", "BrimsGate", "Brimston", "Brynes", "Gahrdian", "Neverfall", "Neidren", "Othellon", "StarsGate", "",
                                 "Portis", "Porter", "Ahk Ytremhenek", "Ythis", "Inagis", "Ahk Ithiliar", "Vos Entarr", "Vos Polluq", "the Redeemed", "Achero", "Vos Hehryf", "Waka", "Reeves", "Kye",
                                 "Aroborous", "Fuagamimos", "Fuerente", "Renzei", "Weyan", "Yi-Tzai", "Gibraltar", "Sodderton", "Adderlash", "Arrowtip", "Modura", "Godjira", "Kinora", "Zenida", "",
-                                "Carano", "Illyad", "Illuminos", "Illyriahn", "Abel", "Lon Furios", "Lon Gemeira", "Gamora", "Kantarr", "Beam", "Kruehd", "Govvernoh", "Admirrahl", "Mynnist'r", "",
+                                "Carano", "Illyad", "Illuminos", "Illyriahn", "Abalon", "Lon Furios", "Lon Gemeira", "Gamora", "Kantarr", "Beam", "Kruehd", "Govvernoh", "Admirrahl", "Mynnist'r", "",
                                 "Boke", "Stoak", "Menoak", "Novak", "Torrente", "Toretto", "Melchior", "Shippe", "Toppler", "Sa'gawak", "Chelege", "Kan'maguhr", "Breache", "FloodGate", "Bourne", "",
-                                "Sollemen", "Hidwell", "Treadwell", "Deepwell", "Winn Dew", "Tano", "Hondo", "Soare", "Strack", "Strucker", "Girrakos", "Hoode", "Cape", "Cloake", "Hyder", "Veile",
-                                "Robes", "Bokum", "Barras", "Bendon", "Bakeeros", "Boson", "Bennitou", "Bisolli", "Biggun", "Lobard", "Tashkaruga", "Ikaruga", "Verdeste", "Torres", "Carduic", "Zhou",
+                                "Sollemen", "Hidwell", "Treadwell", "Deepwell", "Winn Dew", "Tano", "Soare", "Strack", "Strucker", "Girrakos", "Hoode", "Cape", "Cloake", "Hyder", "Veile", "Robes",
+                                "Quoy", "Bokum", "Barras", "Bendon", "Bakeeros", "Boson", "Bennitou", "Bisolli", "Biggun", "Lobard", "Tashkaruga", "Ikaruga", "Verdeste", "Torres", "Carduic", "Zhou",
                                 "Torne", "Thorn", "Reikaruga", "Anekaruga", "Zenkaruga", "Kakarott", "Sainouda", "Toriyama", "Dune", "Fremen", "Bhala", "Ekydohr", "Zanoga", "Zanida", "Zaneka", "",
                                 "Zakuhra", "Zarashi", "Zafraihm", "Wynthell", "Bazra", "Vei Tarra", "Riot", "Ehnder", "Kopernikus", "Madalena", "Thodeo", "Hertz", "Quayke", "Winn Kouw", "Illydain",
                                 "Winn Gon", "Barthas", "Etherat", "Ward", "Wyrde", "Tu Azadi", "Black", "Tu Ami", "Tu Asali", "Harrk", "Tu Tegori", "Tu Dori", "Gohrz", "Winn Pow", "Ohmb", "Winn Bao",
                                 "Roth", "Nadellar", "Wielde", "Waile", "Weiroh", "Winn Tzu", "the Enlightened", "Kaleido", "San Zee", "Bidahr", "Tykonik", "Gallehk", "Logio", "Ruínde", "Zeneyro", "",
                                 "Sagabadoth", "Damalcon", "Castanye", "Caste", "Dorontes", "Tenyand", "Tuu-Po", "Serengheti", "Cordi'ahl", "Gymelith", "Karn'agios", "Vander", "Vader", "Sidi-Ooce",
                                 "Ren", "Astahla", "Iok'muhn", "Iso'tohp", "Eeki'sol", "Perangi", "Sagadimm", "Helmuth", "Hillbore", "Mat'astrad", "Uhnweily", "Immestra", "Hypolus", "Ashalloum", "",
-                                "B'ko", "N'gao", "Tch'ree", "J'dei", "U'tao", "K'moor"};
+                                "B'ko", "N'gao", "Tch'ree", "J'dei", "U'tao", "K'moor", "Solo", "Sulu", "Perrion", "Kirk", "Riker", "Crusher", "Yar", "La Forge", "Kiraman", "Medarda", "Catalina", "",
+                                "Iskildor", "Hobbes", "Elloor", "Norris", "Farrungie", "Marquise", "Mirroni", "Mirros", "Macaro", "Teradoña", "Sikooria", "Zyfylantis", "Landis", "Filantro", "Antro",
+                                "Mattis", "Bohrka", "Ginneik", "Cre'shendo", "Cadenza", "Arpeggio", "Miller", "Ohnaka", "Peggahl", "Worian", "Vahrk", "Ithineyfus", "Hillynd", "Bellántése", "Exátra",
+                                "Danashi", "Helion", "Hydronus", "Oxygenis", "Carbonia", "Wynxe", "Ironshield", "Sheelde", "Stoodstrong", "Strongwill", "StrongGate", "Willforce", "Fortesse", "Forde",
+                                "Fortifyde", "La Volonté", "La Dure", "La Rigueur", "La Terre", "Finch", "Euclydios", "Lydeéis", "Maasdu", "Obsidian", "Rhys", "Saffron", "Pongearas", "Iddas'run", "",
+                                "K'neik", "Bondohla", "Fehrua", "Rheon", "Parsley", "Caraway", "Sage", "Tarragon", "Fenugreek", "Turmeric", "Cardamon"};
 
             if (gend == "male")
             {
-                // Kolla upp igen hur man sätter ihop listor till en.
+                // NOTE! Look up again how to make several lists into one...
                 slump1 = Game.randomize.Next(2);
 
                 if (slump1 == 0)
@@ -1393,11 +1408,11 @@ namespace TreasureCave
                     if (beast.composure == 0)
                         beast.composure = 1;
                 }
-                else
-                {
-                    // Test info.
-                    Game.WrtL("yl", "", "Safe Dice saved you this time!", true);
-                }
+                //else
+                //{
+                //    // Test info.
+                //    Game.WrtL("yl", "", "Safe Dice saved you this time!", true);
+                //}
             }
 
             // Battle takes its toll.

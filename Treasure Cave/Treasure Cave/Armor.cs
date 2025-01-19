@@ -43,7 +43,7 @@ namespace TreasureCave
         }
         public static void CreateAllArmor()
         {
-            // Lägg till lite fler av varje sort senare, samt några med magiska effekter när du tänkt ut det. Annars är den här mängden ok.
+            // Add some more of each type later, as well as some with magical attributes when that works. Until then this is enough here.
             // Body armor
             CreateNewArmor("Gambeson", 0, "A thick cloth tunic with long sleeves, protecting slightly against light strikes and cuts",
                 1, 0, "cloth", "", 1, "None", 0, 200);

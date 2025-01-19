@@ -6,7 +6,7 @@ namespace TreasureCave
     {
         /*
         public string[] sizes = { "small", "medium", "big" };
-        // Fundera på att göra denna lista 2-dimensionell för att ge varje vapentyp grundstats...
+        // Think about making this list 2-dimensional to give every weapon type base stats...
         public static string[] weaponClasses = { "sword", "knife", "axe", "blunt", "bow", "crossbow", "spear", "sickle", "whip" };
         public string weaponClass;
         public string size;
@@ -23,13 +23,6 @@ namespace TreasureCave
         public Weapon(string wName, int wClass, int wSize, string type1, string type2, string type3, int wieldLVL, int dualLVL, bool _isDoubleHandheld,
                       string specPow, int specPowVal, int cash, string wDescription)
         {
-            /*
-            Type t = Type.Jabby;
-            if(t == Type.Jabby)
-            {
-
-            }
-            */
             types = new List<string>();
 
             Id = allGear.Count;
@@ -137,7 +130,6 @@ namespace TreasureCave
                     else
                         des += "Nothing special really, just an average " + size + " " + weaponClass + ".";
                 }
-                    
             }
                 
             if (type3 != "")
@@ -324,7 +316,7 @@ namespace TreasureCave
             CreateNewWeapon("Short Dagger", 1, 0, "durable", "", "", 1, 1, false, "None", 0, 180, "weapon");
             CreateNewWeapon("Switchblade", 1, 0, "light", "fragile", "", 2, 3, false, "None", 0, 150, "weapon");
             CreateNewWeapon("Stiletto", 1, 0, "light", "fragile", "jabby", 2, 3, false, "None", 0, 180, "weapon");
-            CreateNewWeapon("Throwing Knife", 1, 0, "light", "", "", 2, 4, false, "None", 0, 100, "weapon");  // Hur ska det funka överhuvudtaget med kastvapen?
+            CreateNewWeapon("Throwing Knife", 1, 0, "light", "", "", 2, 4, false, "None", 0, 100, "weapon");  // Throwing weapons is hard to make functional as a regular weapon... They will eventually be downgraded to disposable weapons.
             CreateNewWeapon("Kunai", 1, 0, "light", "sharper", "", 2, 4, false, "None", 0, 120, "weapon");
             CreateNewWeapon("Throwing Dagger", 1, 0, "", "", "", 2, 4, false, "None", 0, 130, "weapon");
             CreateNewWeapon("Jambiya", 1, 0, "sharper", "durable", "", 1, 2, false, "None", 0, 180, "weapon");

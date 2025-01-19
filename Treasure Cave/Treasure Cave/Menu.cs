@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Xml.Linq;
 
 namespace TreasureCave
 {
@@ -120,6 +121,38 @@ namespace TreasureCave
                                 Game.WrtL("Alright! This is the character loaded!\n");
 
                                 PresentFinalizedPlayer(You);
+
+                                Game.AwaitKeyEnter();
+
+                                Game.WrtL("\n");
+                                Game.WrtL("Are you perfectly satisfied with the skills and equipment or would you like to change something about this\nwarrior this time around?\n");
+                                Game.WrtL("dy", "", "Press enter to PLAY NOW NOW NOW!", true);
+                                Game.WrtL("dy", "", "Press space to change something", true);
+
+                                keyPressed = Console.ReadKey();
+
+                                if (keyPressed.Key == ConsoleKey.Enter)
+                                {
+                                    Console.Clear();
+                                    Game.WrtL("Of course! Let's go!\n");
+                                    PresentFinalizedPlayer(You);
+                                }
+                                else if (keyPressed.Key == ConsoleKey.Spacebar)
+                                {
+                                    Console.Clear();
+                                    Game.WrtL("Absolutely.");
+                                    Game.WrtL("w", "", "Remember that the name of the character will be the file name, so if you want to save both the old character\nand the new one, rename this version slightly, or move the old file from the Save folder.", true);
+                                    Game.WrtL("\nNow just press Enter to go into the character builder.");
+
+                                    Game.AwaitKeyEnter();
+
+                                    CharacterBuilderMenu(You);
+
+                                    SaveCharacterOrNot(You);
+
+                                    PresentFinalizedPlayer(You);
+                                }
+
                                 Game.WrtL("\n");
                                 Game.FinalizePlayerStuff(You);
 
@@ -137,6 +170,45 @@ namespace TreasureCave
                 }
             }
         }
+        // Method for choosing to save or not save the recently created character.
+        public static void SaveCharacterOrNot(Hero You)
+        {
+            Console.Clear();
+            Game.WrtL("w", "", "Would you like to save this character?", true);
+            Game.WrtL("If you do, you can reuse all these settings next time you play, without having to enter all the data again.");
+            Game.WrtL("If you have just altered an existing saved character, remember that the name will be the file name, so if the\nname is exactly the same you will write over the old character...\n");
+            Game.Wrt("dy", "", "Press Enter to save ", true);
+            Game.WrtL("w", "", You.name, true);
+            Game.WrtL("dy", "", "Press Spacebar to continue without saving this character.", true);
+
+            var keyPressed = Console.ReadKey();
+
+            if (keyPressed.Key == ConsoleKey.Enter)
+            {
+                Console.Clear();
+                Game.WrtL("w", "", "Saving " + You.name + "...", false);
+
+                Game.PrepareHeroForSave(You);
+
+                Thread.Sleep(500);
+                Game.WrtL("...");
+                Thread.Sleep(500);
+                Game.WrtL(" -.. /~ ¨_^ *' .~ * .. =# ¤.' - .- .. .' !");
+                Thread.Sleep(500);
+                Game.WrtL("\nThere! Saved!\n");
+                Game.AwaitKeyEnter();
+                Console.Clear();
+            }
+            else if (keyPressed.Key == ConsoleKey.Spacebar)
+            {
+                Console.Clear();
+                Game.WrtL("Not saving.\n");
+                Game.WrtL("Let's continue!\n");
+                Game.AwaitKeyEnter();
+                Console.Clear();
+            }
+        }
+
         // Method for the first game menu. Oh, so recurring.
         public static int StartMenu()
         {
@@ -844,44 +916,70 @@ namespace TreasureCave
                             // name
                             Console.CursorVisible = true;
                             bool tryAgain;
+                            string newName;
 
                             do
                             {
                                 Console.Clear();
                                 tryAgain = false;
-                                string oldName = player.name;
-                                Game.WrtL("Enter a new name, then press Enter.\nIf you change your mind and want to keep the old name, press Space after Enter.");
+                                Game.WrtL("Enter a new name, then press Enter.");
+                                Game.WrtL("You can have a randomized name proposed to you if you just write \"r\" and enter.");
                                 Game.WrtL("\nCurrent name: " + player.name);
                                 Game.Wrt("\nNew name: ");
 
-                                player.name = Console.ReadLine();
+                                newName = Console.ReadLine();
 
-                                Console.Clear();
-
-                                Game.WrtL(player.name);
-                                Game.WrtL("\nIs your new name satisfactory?");
-                                Game.WrtL("Enter = confirm, Space = go back to old name, Left Arrow key = try again.");
-
-                                keyPressed = Console.ReadKey();
-
-                                if (keyPressed.Key == ConsoleKey.Enter)
+                                if (newName == "r")
                                 {
-                                    Game.WrtL("\nGreat! New name!");
-                                    Game.AwaitKeyEnter();
+                                    do
+                                    {
+                                        newName = Game.RandomizeName(player.gender);
+                                        
+                                        if (newName == " writeownagain ")
+                                        {
+                                            tryAgain = true;
+                                        }
+                                    }
+                                    while (newName == "r");
+                                    if (!tryAgain)
+                                    {
+                                        player.name = newName;
+                                        Game.WrtL("\nGreat! New name!");
+                                        Game.AwaitKeyEnter();
+                                        break;
+                                    }
                                 }
-                                else if (keyPressed.Key == ConsoleKey.Spacebar)
+                                if (!tryAgain)
                                 {
-                                    player.name = oldName;
-                                    Game.WrtL("\nNo new name then.");
-                                    Game.WrtL("Your name is still " + player.name);
-                                    Game.AwaitKeyEnter();
-                                }
-                                else if (keyPressed.Key == ConsoleKey.LeftArrow)
-                                {
-                                    player.name = oldName;
-                                    tryAgain = true;
-                                    Game.WrtL("\nDidn't get it right huh? Let's try that again then.");
-                                    Game.AwaitKeyEnter();
+                                    Console.Clear();
+
+                                    newName = Game.ReasonableName(newName);
+                                    newName = Game.CapitalizeFirstLetter(newName);
+
+                                    Game.WrtL(newName);
+                                    Game.WrtL("\nIs your new name satisfactory?\n");
+                                    Game.WrtL("dy", "", "Enter = confirm\nSpace = go back to old name\nLeft Arrow key = try again.", true);
+
+                                    keyPressed = Console.ReadKey();
+
+                                    if (keyPressed.Key == ConsoleKey.Enter)
+                                    {
+                                        player.name = newName;
+                                        Game.WrtL("\nGreat! New name!");
+                                        Game.AwaitKeyEnter();
+                                    }
+                                    else if (keyPressed.Key == ConsoleKey.Spacebar)
+                                    {
+                                        Game.WrtL("\nNo new name then.");
+                                        Game.WrtL("Your name is still " + player.name);
+                                        Game.AwaitKeyEnter();
+                                    }
+                                    else if (keyPressed.Key == ConsoleKey.LeftArrow)
+                                    {
+                                        tryAgain = true;
+                                        Game.WrtL("\nDidn't get it right huh? Let's try that again then.");
+                                        Game.AwaitKeyEnter();
+                                    }
                                 }
                             }
                             while (tryAgain);
@@ -952,7 +1050,7 @@ namespace TreasureCave
                             if (player.extraPoints == 0 && player.battlecry != null && (player.equippedSecondaryWeapon != null || player.equippedShield != null))
                                 allStatsWellFilled = true;
 
-                            // Ska addera lite mer val här. Man ska kunna skippa vissa saker för att köra svårare om man vill.
+                            // Thinking about adding more options here. Being able to play with less things to play harder could be an option.
                             if (allMandatoryStuffDone)
                             {
                                 if (allStatsWellFilled)
@@ -1037,7 +1135,7 @@ namespace TreasureCave
                 Game.WrtL("Are you now sure about this warrior? Is everything as you would like?\n");
                 PresentFinalizedPlayer(player);
                 Game.WrtL("\nOnce you press enter here, there's no turning back,\nthis is you until you die.\n");
-                Game.WrtL("Enter to start playing. Spacebar to take another look at your skills and equipment.\n");
+                Game.WrtL("dy", "", "Enter to start playing.\nSpacebar to take another look at your skills and equipment.\n", true);
 
                 var keyPressed = Console.ReadKey();
 
@@ -1058,7 +1156,8 @@ namespace TreasureCave
                 Game.WrtL("Take a look.\n");
                 PresentFinalizedPlayer(player);
                 Game.WrtL("\nIt's fully possible to play this way, but it could mean that you start more or less uphill than necessary.");
-                Game.WrtL("\nIf this is your choice, press enter to start playing, otherwise,\npress spacebar to look over your character again.");
+                Game.WrtL("\nIf this is your choice, ");
+                Game.WrtL("dy", "", "press Enter to start playing,\notherwise, press Spacebar to look over your character again.", true);
 
                 var keyPressed = Console.ReadKey();
 
@@ -1300,11 +1399,23 @@ namespace TreasureCave
         {
             var wTypes = Gear.weaponClasses;
             string[] menuOptions1;
+
             // "sword", "knife", "axe", "blunt", "bow", "crossbow", "spear", "sickle", "whip"
+            // I put them all in separate strings to shorten the lists.
+            string Sword = Game.CapitalizeFirstLetter(wTypes[0]);
+            string Knife = Game.CapitalizeFirstLetter(wTypes[1]);
+            string Axe = Game.CapitalizeFirstLetter(wTypes[2]);
+            string Blunt = Game.CapitalizeFirstLetter(wTypes[3] + " Weapon");
+            string Bow = Game.CapitalizeFirstLetter(wTypes[4]);
+            string Crossbow = Game.CapitalizeFirstLetter(wTypes[5]);
+            string Spear = Game.CapitalizeFirstLetter(wTypes[6]);
+            string Sickle = Game.CapitalizeFirstLetter(wTypes[7]);
+            string Whip = Game.CapitalizeFirstLetter(wTypes[8]);
+
             if (whichHand == "first")
-                menuOptions1 = new string[] { wTypes[0] + "\t", wTypes[1] + "\t", wTypes[2] + "\t", wTypes[3] + " weapon", wTypes[4] + "\t", wTypes[5] + "\t", wTypes[6] + "\t", wTypes[7] + "\t", wTypes[8] + "\t", "Unequip" };
+                menuOptions1 = new string[] { Sword + "\t", Knife + "\t", Axe + "\t", Blunt, Bow + "\t", Crossbow + "\t", Spear + "\t", Sickle + "\t", Whip + "\t", "Unequip" };
             else
-                menuOptions1 = new string[] { wTypes[0] + "\t", wTypes[1] + "\t", wTypes[2] + "\t", wTypes[3] + " weapon", wTypes[4] + "\t", wTypes[5] + "\t", wTypes[6] + "\t", wTypes[7] + "\t", wTypes[8] + "\t" };
+                menuOptions1 = new string[] { Sword + "\t", Knife + "\t", Axe + "\t", Blunt, Bow + "\t", Crossbow + "\t", Spear + "\t", Sickle + "\t", Whip + "\t" };
 
             int markedOption1 = 0;
 
@@ -1317,8 +1428,13 @@ namespace TreasureCave
 
                 if (player.type == "duelist")
                 {
-                    Game.Wrt("Your warrior types' preferred weapon types are right now " + player.choiceOfWeapon[0] + " and " + player.choiceOfWeapon[1] + ",\n");
+                    if (player.choiceOfWeapon[0] == "any weapon type")
+                        Game.WrtL("Your warrior types' preferred weapon types are right now " + player.choiceOfWeapon[0] + " and " + player.choiceOfWeapon[1] + " of your choice,");
+                    else
+                        Game.WrtL("Your warrior types' preferred weapon types are right now " + player.choiceOfWeapon[0] + " and " + player.choiceOfWeapon[1] + " by your choice,");
+
                     Game.WrtL("but because you've chosen the duelist it will adapt to any new choice as long as you're building your character.");
+
                     if (whichHand == "second")
                     {
                         Game.WrtL("Remember, only the weapon in your first hand defines your preferences.");
@@ -1397,14 +1513,15 @@ namespace TreasureCave
                         weaponsAvailable = Gear.allGear.Where(wpn => wpn.types[1] == Gear.weaponClasses[markedOption1] && wpn.wieldLvl == 1 && wpn.dualWieldLvl == 1 && wpn.isDoubleHandheld == false).ToList();
 
                     List<string> menuOptions2 = new List<string>();
+                    string weaponClassInThislist = weaponsAvailable[0].weaponClass;
 
                     for (int i = 0; i < weaponsAvailable.Count; i++)
                     {
                         var weapon = weaponsAvailable[i];
                         if (weapon.isDoubleHandheld)
-                            menuOptions2.Add(weapon.name + " - Type: " + weapon.weaponClass + " - Size: " + weapon.size + ", two-handed" + " - Attack: " + weapon.attack + " - Critical: " + weapon.criticalChance + " - Defence: " + weapon.defenceDice + " -- " + weapon.cost + " Br");
+                            menuOptions2.Add(weapon.name + " - Size: " + weapon.size + ", two-handed" + " - Attack: " + weapon.attack + " - Critical: " + weapon.criticalChance + " - Defence: " + weapon.defenceDice + " -- " + weapon.cost + " Br");
                         else
-                            menuOptions2.Add(weapon.name + " - Type: " + weapon.weaponClass + " - Size: " + weapon.size + " - Attack: " + weapon.attack + " - Critical: " + weapon.criticalChance + " - Defence: " + weapon.defenceDice + " -- " + weapon.cost + " Br");
+                            menuOptions2.Add(weapon.name + " - Size: " + weapon.size + " - Attack: " + weapon.attack + " - Critical: " + weapon.criticalChance + " - Defence: " + weapon.defenceDice + " -- " + weapon.cost + " Br");
                     }
 
                     int markedOption2 = 0;
@@ -1464,6 +1581,8 @@ namespace TreasureCave
                             Game.Wrt("\nAvailable Branzen: ");
                             Game.WrtL("yl", "", Game.Branzen + "\n", true);
                         }
+
+                        Game.WrtL("Weapon type: " + Game.CapitalizeFirstLetter(weaponClassInThislist) + "\n");
 
                         MenuPrinter(menuOptions2, markedOption2, "   ");
 
@@ -2246,6 +2365,7 @@ namespace TreasureCave
         // Method for the menu of equipped gear of a certain warrior, and for changing any of the gear, unequipping or replacing it with new gear.
         public static int EquipGearMenu(Hero warrior)
         {
+            // NOTE! It's possible to equip a second weapon through here even when it shouldn't be possible, such as when someone wields a double-handed weapon. Look over the checking of that.
             int markedOption = 0;
 
             string helmet = "Helmet: ";

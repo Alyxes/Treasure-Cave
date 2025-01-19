@@ -14,6 +14,8 @@ namespace TreasureCave
         public static int currentCaveNr = -1;
         // Bool to keep track of if the player passes the same pathway again.
         public static bool samePathway = true;
+        // int to keep track of how many squares the player has moved since last entered room. Used mainly for keeping track of when samePathway should become false...
+        public static int inRoomMoveCounter = 0;
 
         // The list of all the cave rooms.
         public static List<Cave> Caves = new List<Cave>();
@@ -21,7 +23,7 @@ namespace TreasureCave
         public static List<int> usedCaveRooms = new List<int>();
 
         // The amount of rooms, a constant because the array that will use it is sad otherwise.
-        public const int rooms = 20;
+        public const int rooms = 21;
         // That plus one! Because I want to keep one empty room in the array for easy copying.
         const int roomsPlusOneEmpty = rooms + 1;
 
@@ -40,9 +42,9 @@ namespace TreasureCave
         static string g = "GodMode";
 
         // These four lists are used to compile each cave room. Each corresponding value is put into each room, here is no randomness.
-        public static string[] floorDifficulty = new string[rooms] { e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e };
-        public static int[] monsterAmount = new int[rooms] { 5, 6, 7, 6, 6, 5, 7, 4, 4, 5, 5, 5, 6, 4, 4, 5, 5, 7, 3, 4};
-        public static double[] monsterRisk = new double[rooms] { 0.12, 0.13, 0.1, 0.12, 0.11, 0.09, 0.12, 0.1, 0.14, 0.11, 0.12, 0.1, 0.11, 0.1, 0.1, 0.12, 0.12, 0.13, 0.09, 0.11};
+        public static string[] floorDifficulty = new string[rooms] { e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e, e };
+        public static int[] monsterAmount = new int[rooms] { 5, 6, 7, 6, 6, 5, 7, 4, 4, 5, 5, 5, 6, 4, 4, 5, 5, 7, 3, 4, 4};
+        public static double[] monsterRisk = new double[rooms] { 0.12, 0.13, 0.1, 0.12, 0.11, 0.09, 0.12, 0.1, 0.14, 0.11, 0.12, 0.1, 0.11, 0.1, 0.1, 0.12, 0.12, 0.13, 0.09, 0.11, 0.1};
         // I wanted to be able to have several room maps designed by me in the same list. A 3-dimensional array seemed the best way.
         // I love the neat presentation of it and how easy it gets to design a new room right here in the code.
         // 0 = floor, 1 = wall, 3 = treasure, 2 was doors, they now randomize, 4 was monsters, they also now randomize.
@@ -207,6 +209,14 @@ namespace TreasureCave
              {1,0,0,0,1,1,0},
              {1,1,1,0,0,0,0},
              {1,1,1,3,0,1,1}},
+
+            {{1,0,0,0,0,1,0}, //20
+             {0,1,3,1,0,0,0},
+             {0,0,1,0,0,1,0},
+             {0,0,0,0,1,1,0},
+             {0,1,0,1,3,0,0},
+             {1,0,0,0,1,1,0},
+             {3,0,1,0,0,3,1}},
 
             {{0,0,0,0,0,0,0}, //
              {0,0,0,0,0,0,0},
@@ -422,8 +432,9 @@ namespace TreasureCave
                 }
                 else if (keyPressed.Key == ConsoleKey.Enter)
                 {
+                    Game.enterWasPressed = true;
                     // Entering pathways inside the cave.
-                    if (current.caveFloor[x, y] == 2 || current.caveFloor[x, y] == 4)
+                    if (current.caveFloor[x, y] == 4) // "current.caveFloor[x, y] == 2" was also here before, but trying to enter that is technically impossible as '2' becomes '4' as soon as one walks on it.
                     {
                         EraseRedOnMap(current);
                         EnterCaveDoor();
@@ -463,7 +474,15 @@ namespace TreasureCave
         // Method for setting the Party's position to the new position after player successfully steered around the walls.
         static void Move(int x, int y)
         {
-            //NOTE! Thinking about a counter in Move to make Game.TimeUnitsPass(1, true) run if one walks around alot, without encounters of any kind. Maybe not.
+            inRoomMoveCounter++;
+            if (inRoomMoveCounter == 6)
+            {
+                // The player has moved around so much that they might have reached another pathway than the one they entered from.
+                // If it is the same anyway, this makes sure that moving around makes time go (when entering pathways) regardless.
+                samePathway = false;
+                inRoomMoveCounter = 0;
+            }
+
             PartyPosition[0] = x;
             PartyPosition[1] = y;
         }
@@ -525,21 +544,24 @@ namespace TreasureCave
                     {
                         Battle(room, monster, false);
                     }
+                    // NOTE! I'm thinking of having a method running directly after the battle, letting the player heal/resurrect dying warriors if possible, and if not everyone are dead of course.
                     // Results are in. Remove any eventual dead warriors from Party.
                     GoThroughBattleResult();
 
                     if (Game.Party.Count == 0)
                     {
-                        // This shouldn't happen, death is supposed to happen inside the battle method already.
+                        // This shouldn't happen, death is supposed to happen inside the battle method already. Just in case...
                         Game.EndGameByDeath(0);
                     }
                     else
                     {
                         // This means you beat the monster.
-                        // Erase a eventual red X left.
+                        // Erase an eventual red X left.
                         EraseRedOnMap(room);
                         // Put a new X on last battle spot.
                         room.caveFloor[x, y] = 6;
+
+                        samePathway = false;
                         specialPlace = true;
                     }
                 }
@@ -548,6 +570,7 @@ namespace TreasureCave
             {
                 // Found pathway! Transform it into an always visible pathway (square of dark cyan paint).
                 room.caveFloor[x, y] = 4;
+                samePathway = false;
             }
             else if (room.caveFloor[x, y] == 3)
             {
@@ -578,13 +601,25 @@ namespace TreasureCave
                     }
 
                     if (ItemName == ItemName2)
-                        Game.WrtL("\nYou've found two " + ItemName + "s!");
+                    {
+                        Game.Wrt("w", "", "\nYou've found two ", true);
+                        Game.Wrt("y", "", ItemName + "s", true);
+                        Game.WrtL("w", "", "!", true);
+                    }
                     else if (ItemName2 != "Nothing")
                     {
-                        Game.WrtL("\nYou've found one " + ItemName + " and one " + ItemName2 + "!");
+                        Game.Wrt("w", "", "\nYou've found one ", true);
+                        Game.Wrt("y", "", ItemName, true);
+                        Game.Wrt("w", "", " and one ", true);
+                        Game.Wrt("y", "", ItemName2, true);
+                        Game.WrtL("w", "", "!", true);
                     }
                     else
-                        Game.WrtL("\nYou've found one " + ItemName + "!");
+                    {
+                        Game.Wrt("w", "", "\nYou've found one ", true);
+                        Game.Wrt("y", "", ItemName, true);
+                        Game.WrtL("w", "", "!", true);
+                    }
                 }
 
                 Game.WrtL("\nLet's hope you get out with it alive.\n");
@@ -593,7 +628,10 @@ namespace TreasureCave
 
                 Game.TimeUnitsPass(1, true);
 
-                // This truly was a special place. (Since we have wiped the console clean, we need to redraw the cave when we return to the navigation view from this method. Returning true does that.
+                samePathway = false;
+
+                // This truly was a special place. (Since we have wiped the console clean, we need to redraw the cave when we return to the navigation view from this method.
+                // Returning true does that.
                 specialPlace = true;
             }
             return specialPlace;
@@ -708,7 +746,7 @@ namespace TreasureCave
                         Hero.RecoverFromPoisoning(P);
                     }
 
-                    // If Party members have lost their composure they now flee into the darkness, and are lost.
+                    // If Party members have lost their composure in prior battlerounds they now flee into the darkness, and are lost.
                     if (P.composure <= 0)
                     {
                         if (Game.Party.Count == 1 || P.alltimePartyId == 1)
@@ -755,7 +793,7 @@ namespace TreasureCave
                             P.composure--;
                         Game.AwaitKeyEnter();
                     }
-                    // If this warrior's composure just hit bottom the player has another battle round to fix it before this warrior runs off, unless it's the player character and they're
+                    // If warrior's composure just hit bottom the player has another battle round to fix it before this warrior runs off, unless it's the player character and they're
                     // going alone...
                     if (P.composure <= 0)
                     {
@@ -1037,14 +1075,18 @@ namespace TreasureCave
 
                 if (hero.healthpoints <= 0)
                 {
+                    Console.Clear();
                     if (!Game.partyMembersInPeril.Remove(hero.alltimePartyId))
                     {
                         Game.WrtL("alltimePartyId not found in partyMembersInPeril-List!");
                         Game.AwaitKeyEnter();
                     }
-                    
+
+                    Game.WrtL(hero.name + " is dead, and can no longer be saved.");
                     Game.Party.RemoveAt(i);
                     i--;
+
+                    Game.AwaitKeyEnter();
                 }
                 else
                 {
@@ -1089,7 +1131,7 @@ namespace TreasureCave
                     if (hero.dualWieldExperience >= Game.dualWieldLevelRiseValues[hero.dualWieldLevel-1])
                     {
                         Console.Clear();
-                        Game.WrtL(hero.name + " has leveled up in dual wielding!");
+                        Game.WrtL(hero.name + " has leveled up in dual wielding!\n");
                         Game.AwaitKeyEnter();
                         Hero.LevelUpDualWielding(hero, hero.dualWieldLevel + 1);
                     }
@@ -1154,7 +1196,7 @@ namespace TreasureCave
 
             return Caves[nCave];
         }
-        // Method from placing the player on correct position on both the cave map and in cave room, when entering a cave room.
+        // Method for placing the player on correct position on both the cave map and in cave room, when entering a cave room.
         // Attributes(Player position in big cave X, Player position in big cave Y, direction difference X, direction difference Y, New position in new cave room X, New position in new cave room Y)
         static void EnterRoomFromDirection(int bigCaveX, int bigCaveY, int dirX, int dirY, int entrancePosX, int entrancePosY)
         {
@@ -1175,6 +1217,7 @@ namespace TreasureCave
 
             Game.justEntered = true;
             samePathway = true;
+            inRoomMoveCounter = 0;
 
             if (nextCave != null)
             {
@@ -1196,7 +1239,7 @@ namespace TreasureCave
         // Method for entering a cave in the direction you exited a pathway.
         static void EnterCaveDoor()
         {
-            Console.Clear();
+            // Console.Clear();
 
             int x = BigCavePosition[0];
             int y = BigCavePosition[1];

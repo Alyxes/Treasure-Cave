@@ -539,7 +539,8 @@ namespace TreasureCave
                                 warrior.ailments.Add(Game.ailments[0]); // bleeding
                                 Game.AddToPerilListIfAbsent(warrior.alltimePartyId);
 
-                                Game.WrtL("The wound got deep and the warrior is bleeding heavily!");
+                                Game.Wrt("The wound got deep and the warrior is ");
+                                Game.WrtL("r", "", "bleeding heavily!", true);
                                 Game.WrtL(Game.CapitalizeFirstLetter(warrior.pronoun[0]) + " needs some kind of medical care soon!\n");
                             } 
                         }
@@ -555,7 +556,9 @@ namespace TreasureCave
                                 warrior.ailments.Add(Game.ailments[9]); // poisoned
                                 Game.AddToPerilListIfAbsent(warrior.alltimePartyId);
 
-                                Game.WrtL("The beast managed to poison the warrior! It will weaken " + warrior.pronoun[1] + " over time and finally kill " + warrior.pronoun[1] + ".");
+                                Game.Wrt("The beast managed to ");
+                                Game.WrtL("r", "", "poison the warrior!", true);
+                                Game.WrtL("It will weaken " + warrior.pronoun[1] + " over time and finally kill " + warrior.pronoun[1] + ".");
                                 Game.Wrt("A strong person resists longer... ");
                                 Game.WrtL("But " + warrior.pronoun[0] + "'s gonna need an antidote soon.\n");
                             }
@@ -626,9 +629,11 @@ namespace TreasureCave
             else if (warriorCountered)
             {
                 Game.WrtL(beast.name + " couldn't touch the warrior.");
-                Game.WrtL("w", "", "However, " + warrior.name + " counter attacked, and damaged the monster " + counterHits + " healthpoints!\n", true);
+                Game.Wrt("w", "", "However, " + warrior.name + " counter attacked, and damaged the monster ", true);
+                Game.Wrt("yl", "", counterHits, true);
+                Game.WrtL("w", "", " healthpoints!\n", true);
 
-                XPgained += beast.XPworth / beast.maxHealth * counterHits;
+               XPgained += beast.XPworth / beast.maxHealth * counterHits;
 
                 if (beast.healthpoints <= 0)
                 {

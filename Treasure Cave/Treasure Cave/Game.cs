@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Xml.Serialization;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace TreasureCave
 {
@@ -59,6 +60,9 @@ namespace TreasureCave
         // Bool to keep track of when you can rest your team.
         public static bool justRested = false;
         public static bool inTheCave = false;
+        public static bool enterWasPressed = false; // Used to keep track of if the enter button has been pressed already and shouldn't need to be pressed again.
+                                                    // This is to fix problems with needing to double press enter sometimes, because a lot of methods ends with it, and they run inside other methods
+                                                    // that also ends with the need to press enter.
 
         // int to get the first cave, and to keep the first cave as the entrance cave.
         public static int startingCave;
@@ -127,7 +131,7 @@ namespace TreasureCave
                 "Your blood will paint the walls, monster!", "Never will you rise from my blow, vile creature!" },
             { "Oh, if you're game, you're dead, beast!", "You won't know what hit you before this is over!",
                 "Given any other circumstance, you would never have seen me before falling by my hand.", "Beast, killing you is my livelihood!",
-                "You're unedible! But a raging boar must be put down!", "You clearly lack animal instincts attacking me!", "You dear attack me, beast!? I hunt you for a living!",
+                "You're unedible! But a raging boar must be put down!", "You clearly lack animal instincts attacking me!", "You dare attack me, beast!? I hunt you for a living!",
                 "You waste of a being. Your dead body must be unedible...", "This beast is unnatural! It must be removed to protect the balance of these lands!" },
             { "I don't expect you to play fair! I assure you, I won't!", "I resent these torchlights too, fellow shadow dweller, but we must play our parts.",
                 "Moral is off the map in here, monster! I'm not great at it out there either!", "An animal huh? Not a problem, it's just easier to trick!",
@@ -156,7 +160,7 @@ namespace TreasureCave
             { "melee", "twohanded" },
             { "ranged", "spear" },
             { "sickle", "knife" },
-            { "any weapon type of your choice", "any weapon size of your choice" }, // duelist is a special case. Check their constructor for details. These lines are for the beginning phase when the player is creating a new warrior.
+            { "any weapon type", "any weapon size" }, // duelist is a special case. Check their constructor for details. These lines are for the beginning phase when the player is creating a new warrior.
             { "medium", "melee" }
         };
         // An array of names of starting items for different warrior types, the actual items are later picked from an object array based on these names.
@@ -224,9 +228,14 @@ namespace TreasureCave
                 Bbl();
         }
         // Several small methods for creating coloured text and such. Over loaded for ease of use.
-        public static void WrtL(string text) { Console.WriteLine(text); }
+        public static void WrtL(string text)
+        { 
+            Console.WriteLine(text);
+            if (text != "")
+                enterWasPressed = false;
+        }
 
-        // These types of methods take four arguments: colour for text, colour for backgrund, text to write, whether to reset the colour or not.
+        // These types of methods take four arguments: colour for text, colour for backgrund, text to write, boolean about whether to reset the colour or not.
         public static void WrtL(string colour, string Bcolour, string text, bool reset)
         {
             ColourChooser(colour, Bcolour);
@@ -234,7 +243,11 @@ namespace TreasureCave
             if (reset)
                 res();
         }
-        public static void WrtL(int numbers) { Console.WriteLine(numbers); }
+        public static void WrtL(int numbers)
+        {
+            Console.WriteLine(numbers);
+            enterWasPressed = false;
+        }
         public static void WrtL(string colour, string Bcolour, int numbers, bool reset)
         {
             ColourChooser(colour, Bcolour);
@@ -242,7 +255,12 @@ namespace TreasureCave
             if (reset)
                 res();
         }
-        public static void Wrt(string text) { Console.Write(text); }
+        public static void Wrt(string text)
+        {
+            Console.Write(text);
+            if (text != "")
+                enterWasPressed = false;
+        }
         public static void Wrt(string colour, string Bcolour, string text, bool reset)
         {
             ColourChooser(colour, Bcolour);
@@ -250,7 +268,11 @@ namespace TreasureCave
             if (reset)
                 res();
         }
-        public static void Wrt(int numbers) { Console.Write(numbers); }
+        public static void Wrt(int numbers)
+        {
+            Console.Write(numbers);
+            enterWasPressed = false;
+        }
         public static void Wrt(string colour, string Bcolour, int numbers, bool reset)
         {
             ColourChooser(colour, Bcolour);
@@ -285,6 +307,7 @@ namespace TreasureCave
         public static void Bw() { Console.BackgroundColor = ConsoleColor.White; }
         public static void Bbl() { Console.BackgroundColor = ConsoleColor.Black; }
         public static void res() { Console.ResetColor(); }
+        // Starting method Main. Shows start screen, puts the player through the character editor, and finally into the game menu, where all the gaming ensues.
         public static void Main(string[] args)
         {
             Console.SetWindowSize(120, 35); // 120, 30 is standard. NOT real pixel size...
@@ -316,13 +339,13 @@ namespace TreasureCave
             Item.CreateAllItems();
             Gear.BuildProbabilityGearLists();
 
-            // randomizes a new cave.
+            // Randomizes a new cave.
             do
             {
                 startingCave = randomize.Next(Cave.Caves.Count);
             }
             while (startingCave == 11); // Cave 11 is closed around the lower entrance, so... not that one as the first.
-            // Puts the cave in the "used" list. Will be checked through in a method.
+            // Puts the cave in the "used" list.
             Cave.usedCaveRooms.Add(startingCave);
 
             // Places cave doors on the first map.
@@ -340,6 +363,49 @@ namespace TreasureCave
             // And the gaming starts.
             GameMenu();
         }
+        // Method for letting the player enter a name to their character.
+        public static string EnterYourName()
+        {
+            string name = "";
+
+            Wrt("\nMy name is: ");
+            name = Console.ReadLine();
+
+            name = ReasonableName(name);
+
+            return name;
+        }
+        // Method for letting the player randomize new names until they are happy with it.
+        public static string RandomizeName(string gender)
+        {
+            Console.Clear();
+            if (gender == null)
+                gender = "non binary";
+
+            string newName = Hero.NameGenerator(gender);
+            Wrt("The name ");
+            Wrt("w", "", newName, true);
+            WrtL(" is given to you.\nIs it satisfactory?\n");
+            WrtL("dy", "", "Press enter to confirm\nPress \"r\" to randomize again\nPress space to write your own name", true);
+
+            var keyPressed = Console.ReadKey();
+
+            if (keyPressed.Key == ConsoleKey.Enter)
+            {
+                return newName;
+            }
+            else if (keyPressed.Key == ConsoleKey.R)
+            {
+                return "r";
+            }
+            else if (keyPressed.Key == ConsoleKey.Spacebar)
+            {
+                return " writeownagain ";
+            }
+            else
+                return newName;
+        }
+        // Method for creating a starting character, and then letting the player choose if they want to save it or not.
         public static void CreateStartCharacter()
         {
             Console.Clear();
@@ -354,28 +420,34 @@ namespace TreasureCave
             Wrt(". ");
             Wrt("yl", "", "But don't worry", true);
             WrtL(", both can be changed before you commit.");
+            WrtL("You can have a randomized name proposed to you if you just write \"r\" and enter.");
+
+            You.name = EnterYourName();
 
             do
             {
                 if (You.name == "")
                 {
-                    WrtL("dy", "", "\nNot buying that. Really now, what's your name?", true);
+                    Console.Clear();
+                    WrtL("dy", "", "Not buying that. Really now, what's your name?", true);
+                    WrtL("You can have a randomized name proposed to you if you just write \"r\" and enter.");
+                    You.name = EnterYourName();
                 }
-
-                You.name = "";
-                Wrt("\nMy name is: ");
-                You.name = Console.ReadLine();
-
-                if (!ReasonableName(You.name))
+                else if (You.name == " writeownagain ")
                 {
-                    You.name = "";
+                    WrtL("\nOk then, what is your name?");
+                    You.name = EnterYourName();
+                }
+                else if (You.name == "r")
+                {
+                    You.name = RandomizeName("non binary");
                 }
             }
-            while (You.name == "");
+            while (You.name == "" || You.name == "r" || You.name == " writeownagain ");
 
             if (You.name == "T")
             {
-                // Test mode. Randomizes a warrior for you.
+                // Test mode. Randomizes a complete warrior for you.
                 testmode = true;
 
                 You = RandomizeWarrior();
@@ -385,6 +457,7 @@ namespace TreasureCave
                 WrtL("Turns out, this is you:\n");
 
                 Menu.PresentFinalizedPlayer(You);
+
                 WrtL("\nHave fun.\n");
             }
             else
@@ -407,41 +480,12 @@ namespace TreasureCave
 
                 Menu.CharacterBuilderMenu(You);
 
-                Console.Clear();
-                WrtL("Would you like to save this character?");
-                WrtL("If you do, you can reuse all these settings next time you play, without having to enter all the data again.\n");
-                WrtL("Press Enter to save " + You.name + ".\nPress Spacebar to continue without saving this character.");
-
-                var keyPressed = Console.ReadKey();
-
-                if (keyPressed.Key == ConsoleKey.Enter)
-                {
-                    Console.Clear();
-                    WrtL("w", "", "Saving " + You.name + "...", false);
-
-                    PrepareHeroForSave(You);
-
-                    Thread.Sleep(500);
-                    WrtL("...");
-                    Thread.Sleep(500);
-                    WrtL(" -.. - .~ * .. =# ¤ . - - !");
-                    Thread.Sleep(500);
-                    WrtL("\nThere! Saved!\n");
-                    AwaitKeyEnter();
-                    Console.Clear();
-                }
-                else if (keyPressed.Key == ConsoleKey.Spacebar)
-                {
-                    Console.Clear();
-                    WrtL("Not saving.\n");
-                    WrtL("Let's continue!\n");
-                    AwaitKeyEnter();
-                    Console.Clear();
-                }
+                Menu.SaveCharacterOrNot(You);
             }
 
             FinalizePlayerStuff(You);
         }
+        // Method for adding base gear to the player's inventory and presenting them, and adding the player to the Party list.
         public static void FinalizePlayerStuff(Hero You)
         {
             partyGear.Add(Gear.GearWithName("Small Health Potion"));
@@ -460,6 +504,7 @@ namespace TreasureCave
             Party.Add(You);
             maximumPartyEnlisting++;
         }
+        // Method for randomizing a warrior, for use in testing mode and of course when recruiting new warriors.
         public static Hero RandomizeWarrior()
         {
             Hero warrior;
@@ -602,7 +647,7 @@ namespace TreasureCave
                 }
             }
         }
-        // If the player chooses to go into the village.
+        // Method for if the player chooses to go into the village.
         public static void GoToTheVillage()
         {
             while(true)
@@ -629,7 +674,7 @@ namespace TreasureCave
                 }
             }
         }
-        // If the player chooses the market street.
+        // Method for if the player chooses to go to the market street.
         public static void Shop()
         {
             Console.Clear();
@@ -640,7 +685,7 @@ namespace TreasureCave
             AwaitKeyEnter();
             Menu.ShopMenu();
         }
-        // Here is the recruiting done. Randomizes an amount of warriors at the tavern, presents them to the player one by one, letting them choose to hire or not.
+        // Method for recruiting new warriors. Randomizes an amount of warriors at the tavern, presents them to the player one by one, letting them choose to hire or not.
         public static void Recruit()
         {
             Console.Clear();
@@ -651,6 +696,7 @@ namespace TreasureCave
 
             AwaitKeyEnter();
 
+            // NOTE! In the future, an amount of specific warriors is staying at the inn for a whole day, there will not be new ones every time you enter. Perhaps some will even stay longer.
             int amountOfWarriorsHereToday = 1 + randomize.Next(3);
 
             for (int i = 0; i < amountOfWarriorsHereToday; i++)
@@ -679,8 +725,7 @@ namespace TreasureCave
                 if (Branzen >= warrior.cost)
                 {
                     WrtL("Is that agreeable with you?\n");
-                    WrtL("Enter to agree");
-                    WrtL("Spacebar to deny");
+                    WrtL("dy", "", "Enter to agree\nSpacebar to deny", true);
 
                     var keyPressed = Console.ReadKey();
 
@@ -715,7 +760,7 @@ namespace TreasureCave
 
             AwaitKeyEnter();
         }
-        // If the player chooses to go to the inn. Checks for specific ailments in your party that disqualifies you for sleeping there.
+        // Method for if the player chooses to go to the inn. Checks for specific ailments in your party that disqualifies you for sleeping there.
         static void AtTheInn()
         {
             Console.Clear();
@@ -746,8 +791,8 @@ namespace TreasureCave
 
             if (bleeding && poisoned)
             {
-                WrtL("\nYour group look to be in quite bad shape, looks like poisoning and heavy bleeding and whatnot... Some of you will probably die during the night if you don't tend to them first.");
-                WrtL("It will look really bad in our book if we have guests dying sleeping here... We won't have it.");
+                WrtL("\nYour group seem to be in a quite bad shape, looks like poisoning and heavy bleeding and whatnot...\nSome of you will probably die during the night if you don't tend to them first.");
+                WrtL("It will look really bad in our book if we have guests dying while staying here... We won't have it.");
                 WrtL("Please leave. Hope you can save them. Welcome back...");
 
                 AwaitKeyEnter();
@@ -755,7 +800,7 @@ namespace TreasureCave
             }
             else if (bleeding)
             {
-                WrtL("\nYou have a heavily bleeding warrior among you. " + CapitalizeFirstLetter(bleedingWarrior.pronoun[0]) + " will die during the night if you don't fix " + bleedingWarrior.pronoun[1] + "...");
+                WrtL("\nYou have a heavily bleeding warrior among you. " + CapitalizeFirstLetter(bleedingWarrior.pronoun[0]) + " will die during the night\nif you don't fix " + bleedingWarrior.pronoun[1] + "...");
                 WrtL(CapitalizeFirstLetter(bleedingWarrior.pronoun[0]) + " will bleed on the sheets! We won't have it.");
                 WrtL("Please leave. Hope you can save " + bleedingWarrior.pronoun[1] + ". Welcome back...");
 
@@ -764,8 +809,8 @@ namespace TreasureCave
             }
             else if (poisoned)
             {
-                WrtL("\nYou have a poisoned warrior among you. " + CapitalizeFirstLetter(poisonedWarrior.pronoun[0]) + " will die during the night if you don't cure " + poisonedWarrior.pronoun[1] + "...");
-                WrtL("It will look really bad in our book if we have a guest dying sleeping here... We won't have it.");
+                WrtL("\nYou have a poisoned warrior among you. " + CapitalizeFirstLetter(poisonedWarrior.pronoun[0]) + " will die during the night\nif you don't cure " + poisonedWarrior.pronoun[1] + "...");
+                WrtL("It will look really bad in our book if we have a guest dying while staying here... We won't have it.");
                 WrtL("Please leave. Hope you can save " + poisonedWarrior.pronoun[1] + ". Welcome back...");
 
                 AwaitKeyEnter();
@@ -775,8 +820,7 @@ namespace TreasureCave
             if (Branzen >= 100 * Party.Count)
             {
                 WrtL("Are you done for the day and ready to pay?\n");
-                WrtL("Enter to pay and stay.");
-                WrtL("Spacebar to wait and leave.");
+                WrtL("dy", "", "Enter to pay and stay.\nSpacebar to leave.", true);
 
                 var keyPressed = Console.ReadKey();
 
@@ -784,7 +828,7 @@ namespace TreasureCave
                 {
                     Console.Clear();
 
-                    WrtL("You're not weary or hungry yet. Let's go.");
+                    WrtL("You're not that weary or hungry yet. Let's go.");
                 }
                 else if (keyPressed.Key == ConsoleKey.Enter)
                 {
@@ -792,15 +836,17 @@ namespace TreasureCave
 
                     Console.Clear();
 
-                    int timeunitsToPass = ((24 - hourOfDay + 7) * 4) - timeUnits;
+                    int timeUnitsToPass = ((24 - hourOfDay + 7) * 4) - timeUnits;
 
-                    TimeUnitsPass(timeunitsToPass, false);
+                    TimeUnitsPass(timeUnitsToPass, false);
 
-                    WrtL(hourOfDay);
-                    WrtL(timeOfDay);
+                    // WrtL(hourOfDay);
+                    // WrtL(timeOfDay);
 
-                    WrtL("You all get a good meal and a good nights sleep, feeling fully restored the next morning.");
-                    WrtL("You're awakened at seven in the morning. The sun has just risen.");
+                    WrtL("You get a good meal and a good nights sleep, feeling fully restored the next morning.\n");
+                    WrtL("You're awakened at seven. The sun has just risen behind the grey, murky sky, being just a blurred white stain.");
+                    WrtL("The constant small rain seems heavier; the moist of the town is more tangible, and the alleys are still\ndark as the night.\n");
+                    WrtL("The breakfast is meager but gets you going.");
 
                     for (int i = 0; i < Party.Count; i++)
                     {
@@ -837,7 +883,7 @@ namespace TreasureCave
 
             TimeUnitsPass(2, false);
 
-            WrtL("Walking through the dead forest in the thick mists, uphill where the mountain starts peaking out from the ground.");
+            WrtL("You're walking uphill through the dead forest in the thick mists, the mountain starts peaking out from the ground.");
             WrtL("Getting lost here would almost be a certainty without the map with the clear land marks...");
 
             AwaitKeyEnter();
@@ -846,8 +892,12 @@ namespace TreasureCave
 
             AwaitKeyEnter();
 
-            WrtL("You reach the cave entrance. Its gaping darkness and grotesque, jagged edges truly make it look like\na portal to the other side...");
-            WrtL("Nevertheless, you are here to explore it.\nSo you enter.");
+            WrtL("The black cave entrance emerges from the whiteness of the mist. Its gaping darkness and grotesque, jagged edges\ntruly make it look like a portal to the other side...");
+            WrtL("And looking around a bit quickly reveals bones and shredded clothing that came from several humans and animals.\n");
+
+            AwaitKeyEnter();
+
+            WrtL("Nevertheless, you are here to explore it.\nSo you take a deep breath, and enter.");
 
             Game.Wrt("\n\nTime: ");
             Game.WrtL("yl", "", Game.Clock(), true);
@@ -895,7 +945,7 @@ namespace TreasureCave
                 }
             }
         }
-        // Method to calculate an average level of the party of warriors.
+        // Method for calculating an average level of the party of warriors.
         public static void calcAveragePartyLevel()
         {
             if (Party.Count == 1)
@@ -983,45 +1033,33 @@ namespace TreasureCave
                         }
 
                         dayOfWeek = weekDayNames[weekDay - 1];
-                    } 
+                    }
                 }
                 if ((oldTime != timeOfDay) && inTheCave)
                 {
-                    bool pressEnter = false;
                     if (timeOfDay == "sunset")
                     {
                         Console.Clear();
                         WrtL("The sun is setting once again. The monsters are going to feel the surge of the night in an hour.");
                         WrtL("Hurry out, or prepare for some fierce fighting...");
-                        pressEnter = true;
                     }
                     else if (timeOfDay == "nighttime")
                     {
                         Console.Clear();
                         WrtL("Nighttime is here. You can hear monsters in the deepest darkness howl in excitement.");
                         WrtL("Hurry out... Any battle now will be with creatures at their peak.");
-                        pressEnter = true;
                     }
                     else if (timeOfDay == "morning")
                     {
                         Console.Clear();
                         WrtL("Morning has come. A few moaning creatures can be heard out there in the dark, feeling how their power wanes.");
-                        WrtL("They will still be dangerous, and try to purge your existence from this cave, but now is your best chance to defeat them.");
-                        pressEnter = true;
                     }
-                    if (pressEnter)
-                    {
-                        AwaitKeyEnter();
-                    }
+                    AwaitKeyEnter();
                 }
-                
                 value--;
             }
-
-            if (inTheCave)
-                Cave.samePathway = false;
         }
-        // Method to remove warriors that died during a battle and wasn't revived. After a battle it's too late.
+        // Method for removing warriors that died during a battle and wasn't revived. After a battle it's too late.
         public static void RemoveDeadWarriors()
         {
             bool anyDeath = false;
@@ -1048,7 +1086,7 @@ namespace TreasureCave
                     }
                     else
                     {
-                        WrtL("You have died from your ailments, nothing could be done. There wasn't time.");
+                        WrtL("You have died from your ailments, nothing could be done. There wasn't time.\n");
 
                         if (Party.Count > 1)
                         {
@@ -1067,7 +1105,7 @@ namespace TreasureCave
                 calcAveragePartyLevel();
             }
         }
-        // Method that goes through the list om party members that has ailments.
+        // Method that goes through the list of party members that has ailments.
         public static void RunPartyAilments()
         {
             bool first = true;
@@ -1135,7 +1173,7 @@ namespace TreasureCave
             }
             return count;
         }
-        // Method to tell wether a specific warrior has a specific ailment.
+        // Method for telling wether a specific warrior has a specific ailment.
         public static bool HasAilment(Hero warrior, string ailmentInQuestion)
         {
             for (int i = 0; i < warrior.ailments.Count; i++)
@@ -1145,7 +1183,7 @@ namespace TreasureCave
             }
             return false;
         }
-        // Method to remove specific ailment from specific warrior if it has it.
+        // Method for removing specific ailment from specific warrior if it has it.
         public static bool RemoveIfHasAilment(Hero warrior, string ailmentInQuestion)
         {
             if (HasAilment(warrior, ailmentInQuestion))
@@ -1172,7 +1210,7 @@ namespace TreasureCave
                 }
             }
         }
-        // Method to add a specific warrior to the list of sick people, checks that they're not already on it first.
+        // Method for adding a specific warrior to the list of sick people, checks that they're not already on it first.
         public static void AddToPerilListIfAbsent(int warriorId)
         {
             if (partyMembersInPeril.Count > 0)
@@ -1201,7 +1239,7 @@ namespace TreasureCave
             else
             {
                 warrior.healthpoints = 0;
-                WrtL("yl", "", warrior.name + " is bleeding heavily, and just bled to death!", true);
+                WrtL("yl", "", warrior.name + " just bled to death!", true);
                 WrtL("Only magic can revive " + warrior.pronoun[1] + " now...\n");
 
                 if (!HasAilment(warrior, ailments[8]))
@@ -1288,7 +1326,7 @@ namespace TreasureCave
 
                 if (warrior.healthpoints == 1)
                 {
-                    WrtL("It's gone too long without an antidote... " + CapitalizeFirstLetter(warrior.pronoun[0]) + "gurgles and gasps, then legs give up and " + warrior.pronoun[0] + "collapses.\n");
+                    WrtL("It's gone too long without an antidote... " + CapitalizeFirstLetter(warrior.pronoun[0]) + "gurgles and gasps, then legs give up and " + warrior.pronoun[0] + " collapses.\n");
                     WrtL(CapitalizeFirstLetter(warrior.pronoun[0]) + " will need an antidote even if brought back, the poison is still in the body...");
                 }
                 else if (warrior.healthpoints == 2)
@@ -1446,7 +1484,7 @@ namespace TreasureCave
                     break;
             }
         }
-        // Method to rest the party while in the cave. Presents a list of possible things to do while resting. Increases risk of being assaulted by monsters the longer one chooses to rest.
+        // Method for resting the party while in the cave. Presents a list of possible things to do while resting. Increases risk of being assaulted by monsters the longer one chooses to rest.
         public static void RestParty()
         {
             Console.Clear();
@@ -1465,13 +1503,16 @@ namespace TreasureCave
             double monsterRisk = room.riskOfMonsters/2;
             int choice;
             bool keepResting = true;
+            // After resting, entering any pathway will make time pass.
+            Cave.samePathway = false;
 
             while (keepResting)
             {
                 Console.Clear();
-                WrtL("Monster risk = " + monsterRisk);
 
-                AwaitKeyEnter();
+                // testing print
+                // WrtL("Monster risk = " + monsterRisk);
+                // AwaitKeyEnter();
 
                 risk = randomize.Next(100);
 
@@ -1628,9 +1669,6 @@ namespace TreasureCave
                     }
                     // This runs here at the end, because otherwise dead teammates have no time to be saved.
                     TimeUnitsPass(1, true);
-                    // NOTE! It feels unfair that one only has time to save one dying warrior if several are dying. Maybe? As soon as an item is used above code runs, and the rest dies forever,
-                    // even if the player has the means to save them. This could be made into a specific battle end session, but one can discuss that the player should have to consider this
-                    // during the battle, hence it being a part of the difficulty of the game.
                 }
             }
         }
@@ -1713,47 +1751,29 @@ namespace TreasureCave
                 return false;
         }
 
-        // Example code to be used eventually.
-        //{
-        //    string s1 = "*****0000abc000****";
-
-        //    char[] charsToTrim1 = { '*', '0' };
-
-        //    // string to be trimmed
-        //    string s2 = "  abc";
-        //    string s3 = "  -GFG-";
-        //    string s4 = "  GeeksforGeeks";
-
-        //    // Before TrimStart method call
-        //    Console.WriteLine("Before:");
-        //    Console.WriteLine(s1);
-        //    Console.WriteLine(s2);
-        //    Console.WriteLine(s3);
-        //    Console.WriteLine(s4);
-
-        //    Console.WriteLine("");
-
-        //    // After TrimStart method call
-        //    Console.WriteLine("After:");
-
-        //    // argument as char array
-        //    Console.WriteLine(s1.TrimStart(charsToTrim1));
-        //}
-
-        // Method for checking that the name given in the beginning is reasonable. For now it just checks for completely empty or spacebar string.
-        // Above example code will be used to simply trim away all spaces before and after a name.
-        // Maybe there will be some other signs that can't be in a name, but checking if something is just scrambled letters seem too hard to be worth it.
-        // A player can name themself KLlnfq¨'knsad-ikdsa,.f990u 902-3rej<<agik'sdnof if they want to, who cares?
-        private static bool ReasonableName(string check)
+        // Method for checking that the name given in the beginning is reasonable...
+        public static string ReasonableName(string check)
         {
             // Checks string 'check', first if only spacebar was pressed, then if the first or last (or only) sign is space.
-            if (check == "" || (char)check[0] == 32 || (char)check[check.Length - 1] == 32)
+            if (check == "" || check[0] == 32 && check.Length == 1)
             {
-                return false;
+                return "";
             }
-            return true;
+            else
+            {
+                // A reasonable name does not start or end with spaces!
+                string trim1 = string.Empty;
+                string trimmedName = string.Empty;
+
+                trim1 = check.TrimStart(' ');
+                trimmedName = trim1.TrimEnd(' ');
+
+                return trimmedName;
+            }
         }
         // Method for capitalizing the first letter in a string.
+        // It's too much work and also too much interfering with players choice to try to give every separate name a big letter. If somebody doesn't care to write their name correctly with
+        // capitals where those are due that is their soul forever burning in hell.
         public static string CapitalizeFirstLetter(string str)
         {
             if (str == null)
@@ -1769,14 +1789,18 @@ namespace TreasureCave
         // Method for only allowing return as key to continue.
         public static void AwaitKeyEnter()
         {
-            var keyPressed = Console.ReadKey();
-
-            while (keyPressed.Key != ConsoleKey.Enter)
+            if (!enterWasPressed)
             {
-                keyPressed = Console.ReadKey();
-                if (keyPressed.Key == ConsoleKey.Enter)
+                var keyPressed = Console.ReadKey();
+
+                while (keyPressed.Key != ConsoleKey.Enter)
                 {
-                    break;
+                    keyPressed = Console.ReadKey();
+                    if (keyPressed.Key == ConsoleKey.Enter)
+                    {
+                        enterWasPressed = true;
+                        break;
+                    }
                 }
             }
         }
@@ -1819,7 +1843,7 @@ namespace TreasureCave
                 }
             }
         }
-        // Method for when ending the game voluntarily.
+        // Method for when player ends the game voluntarily.
         public static void EndGame()
         {
             Console.Clear();
@@ -1923,7 +1947,7 @@ namespace TreasureCave
                 writer.Flush();
             }
         }
-        // Method to recreate a warrior from an xml file by taking the strings that is supposed to be objects and fetching them by name from the list of gear.
+        // Method for recreating a warrior from an xml file by taking the strings that is supposed to be objects and fetching them by name from the list of gear.
         public static Player RecreateLoadedPlayer(string name)
         {
             string path = @"save\" + name + ".xml";
